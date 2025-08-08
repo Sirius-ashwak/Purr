@@ -1,0 +1,229 @@
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { GameProvider } from './src/context/GameContext';
+import HomeScreen from './src/screens/HomeScreen';
+import TasksScreen from './src/screens/TasksScreen';
+import GardenScreen from './src/screens/GardenScreen';
+import CatsScreen from './src/screens/CatsScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+
+const Tab = createBottomTabNavigator();
+
+function TabNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor: '#2c3e50',
+          borderTopColor: '#34495e',
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+        },
+        tabBarActiveTintColor: '#e74c3c',
+        tabBarInactiveTintColor: '#95a5a6',
+        tabBarLabelStyle: {
+          fontSize: 10,
+          fontWeight: '600',
+        },
+      }}
+    >
+      <Tab.Screen 
+        name="Home" 
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <span style={{ fontSize: size, color }}>🏠</span>
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Tasks" 
+        component={TasksScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <span style={{ fontSize: size, color }}>�</span>
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Garden" 
+        component={GardenScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <span style={{ fontSize: size, color }}>🌿</span>
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Cats" 
+        component={CatsScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <span style={{ fontSize: size, color }}>🐱</span>
+          ),
+        }}
+      />
+      <Tab.Screen 
+        name="Profile" 
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <span style={{ fontSize: size, color }}>⚙️</span>
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
+export default function App() {
+  console.log('PurrPlan World App starting...');
+  
+  return (
+    <GameProvider>
+      <NavigationContainer>
+        <TabNavigator />
+      </NavigationContainer>
+    </GameProvider>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#e74c3c',
+  },
+  header: {
+    alignItems: 'center',
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 5,
+    textAlign: 'center',
+  },
+  tagline: {
+    fontSize: 14,
+    color: '#ecf0f1',
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
+  currencyContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  currencyItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginHorizontal: 10,
+  },
+  currencyIcon: {
+    fontSize: 20,
+    marginRight: 8,
+  },
+  currencyValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  },
+  catContainer: {
+    alignItems: 'center',
+    paddingVertical: 30,
+  },
+  catMascot: {
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    borderRadius: 60,
+    width: 120,
+    height: 120,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  catEmoji: {
+    fontSize: 60,
+  },
+  catName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 5,
+  },
+  catStatus: {
+    fontSize: 14,
+    color: '#ecf0f1',
+    textAlign: 'center',
+  },
+  actionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 20,
+    marginBottom: 30,
+  },
+  actionButton: {
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
+    padding: 15,
+    alignItems: 'center',
+    minWidth: 80,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  actionIcon: {
+    fontSize: 24,
+    marginBottom: 8,
+  },
+  actionText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#2c3e50',
+    textAlign: 'center',
+    marginBottom: 2,
+  },
+  actionSubtext: {
+    fontSize: 10,
+    color: '#7f8c8d',
+    textAlign: 'center',
+  },
+  statusCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
+    padding: 20,
+    marginHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  statusTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2c3e50',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  statusText: {
+    fontSize: 12,
+    color: '#27ae60',
+    textAlign: 'center',
+    marginBottom: 3,
+    fontWeight: '500',
+  },
+});
+
+
