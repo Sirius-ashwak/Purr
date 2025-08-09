@@ -1,5 +1,6 @@
 {
   "expo": {
+  "platforms": ["ios", "android"],
     "name": "PurrPlan World",
     "slug": "purrplan-world",
     "version": "1.0.0",
@@ -9,7 +10,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#e74c3c"
+      "backgroundColor": "#4a148c"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -20,8 +21,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#e74c3c"
+  "foregroundImage": "./assets/adaptive-icon.png",
+  "backgroundColor": "#4a148c"
       },
       "package": "com.purrplan.world"
     },
