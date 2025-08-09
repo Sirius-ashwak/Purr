@@ -12,18 +12,18 @@ import {
   Modal,
   Animated,
   Alert,
-  Dimensions,
   Vibration
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+// Note: Avoid using Dimensions for now to reduce layout edge cases
 
 export default function App() {
   console.log('🐾 PurrPlan World - Premium App Starting...');
   
   // Animation References
   const catBounceAnim = useRef(new Animated.Value(1)).current;
+  // Start at 0 and map to scale 1 via interpolation so items are visible by default
   const coinAnim = useRef(new Animated.Value(0)).current;
   const levelUpAnim = useRef(new Animated.Value(0)).current;
   
@@ -96,6 +96,33 @@ export default function App() {
   const [rewardData, setRewardData] = useState(null);
   const [achievements, setAchievements] = useState([]);
   const [notifications, setNotifications] = useState([]);
+
+  // Safe active cat fallback
+  const activeCat = (cats && cats.length > 0) ? cats[0] : {
+    id: 'default',
+    name: 'Whiskers',
+    breed: 'tabby',
+    mood: 'Happy',
+    energy: 80,
+    happiness: 80,
+    isActive: true,
+    color: '#FF6B6B',
+    accessory: '🎀',
+    favoriteActivity: 'gardening',
+  };
+
+  // Purple gradient colors (top -> bottom)
+  const gradientColors = [
+    '#2e004f', '#3a0a6a', '#4a148c', '#5b2ca3', '#6c4ab6', '#7e60c0', '#8e79d6', '#9b8ee5'
+  ];
+
+  const GradientBackground = () => (
+    <View style={styles.gradientContainer}>
+      {gradientColors.map((c, i) => (
+        <View key={i} style={[styles.gradientBand, { backgroundColor: c }]} />
+      ))}
+    </View>
+  );
   
   // Plant Types Configuration
   const plantTypes = {
@@ -135,14 +162,16 @@ export default function App() {
       interval = setInterval(() => {
         setFocusTimer(prev => ({
           ...prev,
-          timeLeft: prev.timeLeft - 1,
+          timeLeft: Math.max(0, prev.timeLeft - 1),
         }));
       }, 1000);
     } else if (focusTimer.timeLeft === 0 && focusTimer.isRunning) {
       completeFocusSession();
     }
-    
-    return () => clearInterval(interval);
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [focusTimer.isRunning, focusTimer.timeLeft]);
   
   // Garden auto-growth logic
@@ -583,17 +612,26 @@ export default function App() {
 
       {/* Enhanced Currency Display */}
       <View style={styles.currencyContainer}>
-        <Animated.View style={[styles.currencyItem, { transform: [{ scale: coinAnim }] }]}>
+        <Animated.View style={[
+          styles.currencyItem, 
+          { transform: [{ scale: coinAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.25] }) }] }
+        ]}>
           <Text style={styles.currencyIcon}>🐟</Text>
           <Text style={styles.currencyValue}>{gameState.fishTreats}</Text>
           <Text style={styles.currencyLabel}>Treats</Text>
         </Animated.View>
-        <Animated.View style={[styles.currencyItem, { transform: [{ scale: coinAnim }] }]}>
+        <Animated.View style={[
+          styles.currencyItem, 
+          { transform: [{ scale: coinAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.25] }) }] }
+        ]}>
           <Text style={styles.currencyIcon}>🌱</Text>
           <Text style={styles.currencyValue}>{gameState.gardenSeeds}</Text>
           <Text style={styles.currencyLabel}>Seeds</Text>
         </Animated.View>
-        <Animated.View style={[styles.currencyItem, { transform: [{ scale: coinAnim }] }]}>
+        <Animated.View style={[
+          styles.currencyItem, 
+          { transform: [{ scale: coinAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.25] }) }] }
+        ]}>
           <Text style={styles.currencyIcon}>💎</Text>
           <Text style={styles.currencyValue}>{gameState.crystalGems}</Text>
           <Text style={styles.currencyLabel}>Gems</Text>
@@ -604,14 +642,14 @@ export default function App() {
       <View style={styles.catContainer}>
         <Animated.View style={[styles.catMascot, { 
           transform: [{ scale: catBounceAnim }],
-          backgroundColor: cats[0].color 
+          backgroundColor: activeCat.color 
         }]}>
           <Text style={styles.catEmoji}>{getCatMoodEmoji()}</Text>
-          <Text style={styles.catAccessory}>{cats[0].accessory}</Text>
+          <Text style={styles.catAccessory}>{activeCat.accessory}</Text>
         </Animated.View>
-        <Text style={styles.catName}>{cats[0].name}</Text>
+        <Text style={styles.catName}>{activeCat.name}</Text>
         <Text style={styles.catStatus}>
-          Mood: {cats[0].mood} • Energy: {cats[0].energy}/100 • ❤️ {cats[0].happiness}/100
+          Mood: {activeCat.mood} • Energy: {activeCat.energy}/100 • ❤️ {activeCat.happiness}/100
         </Text>
         
         {/* Enhanced Progress Bar */}
@@ -619,7 +657,9 @@ export default function App() {
           <View style={styles.expBar}>
             <Animated.View style={[
               styles.expFill, 
-              { width: `${(gameState.experience / gameState.experienceToNext) * 100}%` }
+              { 
+                width: `${Math.max(0, Math.min(100, gameState.experienceToNext ? (gameState.experience / gameState.experienceToNext) * 100 : 0))}%` 
+              }
             ]} />
             <Text style={styles.expText}>
               {gameState.experience}/{gameState.experienceToNext} XP
@@ -783,7 +823,9 @@ export default function App() {
             <View style={styles.progressRing}>
               <View style={[
                 styles.progressFill,
-                { width: `${((focusTimer.totalTime - focusTimer.timeLeft) / focusTimer.totalTime) * 100}%` }
+                { 
+                  width: `${Math.max(0, Math.min(100, focusTimer.totalTime ? ((focusTimer.totalTime - focusTimer.timeLeft) / focusTimer.totalTime) * 100 : 0))}%` 
+                }
               ]} />
             </View>
           )}
@@ -797,7 +839,7 @@ export default function App() {
               styles.productivityFill,
               { 
                 width: `${focusTimer.productivity}%`,
-                backgroundColor: focusTimer.productivity > 80 ? '#27ae60' : '#f39c12'
+                backgroundColor: focusTimer.productivity > 80 ? '#7e60c0' : '#b388ff'
               }
             ]} />
           </View>
@@ -975,7 +1017,8 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#e74c3c" />
+      <StatusBar barStyle="light-content" backgroundColor="#4a148c" />
+      <GradientBackground />
       
       {/* Notifications */}
       <View style={styles.notificationContainer}>
@@ -990,7 +1033,7 @@ export default function App() {
       </View>
       
       {/* Enhanced Navigation Bar */}
-      <View style={styles.navbar}>
+  <View style={styles.navbar}>
         {[
           { key: 'home', icon: '🏠', label: 'Home' },
           { key: 'tasks', icon: '📝', label: 'Tasks', badge: tasks.filter(t => !t.completed).length },
@@ -1041,7 +1084,7 @@ export default function App() {
             <TextInput
               style={styles.taskInput}
               placeholder="What would you like to accomplish?"
-              placeholderTextColor="#95a5a6"
+              placeholderTextColor="#b8a8ff"
               value={newTaskText}
               onChangeText={setNewTaskText}
               multiline
@@ -1109,7 +1152,7 @@ export default function App() {
       <Modal
         visible={showRewardModal}
         transparent={true}
-        animationType="fade"
+        animationType="slide"
         onRequestClose={() => setShowRewardModal(false)}
       >
         <View style={styles.modalOverlay}>
@@ -1140,7 +1183,7 @@ export default function App() {
       <Modal
         visible={showLevelUpModal}
         transparent={true}
-        animationType="scale"
+        animationType="slide"
         onRequestClose={() => setShowLevelUpModal(false)}
       >
         <View style={styles.modalOverlay}>
@@ -1167,7 +1210,20 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e74c3c',
+    backgroundColor: 'transparent',
+  },
+  // Gradient background layers
+  gradientContainer: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    flexDirection: 'column',
+    pointerEvents: 'none',
+  },
+  gradientBand: {
+    flex: 1,
   },
   
   // Notifications
@@ -1179,7 +1235,7 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   notification: {
-    backgroundColor: 'rgba(46, 204, 113, 0.95)',
+    backgroundColor: 'rgba(155, 89, 182, 0.95)',
     padding: 12,
     borderRadius: 8,
     marginBottom: 5,
@@ -1199,7 +1255,7 @@ const styles = StyleSheet.create({
   // Enhanced Navigation
   navbar: {
     flexDirection: 'row',
-    backgroundColor: '#2c3e50',
+  backgroundColor: 'rgba(0,0,0,0.25)',
     paddingVertical: 12,
     paddingBottom: Platform.OS === 'ios' ? 12 : 16,
     shadowColor: '#000',
@@ -1215,7 +1271,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   navItemActive: {
-    backgroundColor: 'rgba(231, 76, 60, 0.2)',
+  backgroundColor: 'rgba(155, 89, 182, 0.25)',
     borderRadius: 12,
     marginHorizontal: 4,
   },
@@ -1235,7 +1291,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -5,
     right: -8,
-    backgroundColor: '#e74c3c',
+  backgroundColor: '#9b59b6',
     borderRadius: 10,
     minWidth: 20,
     height: 20,
@@ -1249,11 +1305,11 @@ const styles = StyleSheet.create({
   },
   navLabel: {
     fontSize: 10,
-    color: '#95a5a6',
+  color: 'rgba(255,255,255,0.8)',
     fontWeight: '600',
   },
   navLabelActive: {
-    color: '#e74c3c',
+  color: '#d0b3ff',
     fontWeight: 'bold',
   },
   
@@ -1263,7 +1319,7 @@ const styles = StyleSheet.create({
   },
   screenContainer: {
     flex: 1,
-    backgroundColor: '#e74c3c',
+  backgroundColor: 'transparent',
   },
   screenHeader: {
     padding: 20,
@@ -1411,7 +1467,7 @@ const styles = StyleSheet.create({
   },
   expFill: {
     height: '100%',
-    backgroundColor: '#f39c12',
+  backgroundColor: '#bb86fc',
     borderRadius: 10,
   },
   expText: {
@@ -1451,7 +1507,7 @@ const styles = StyleSheet.create({
   statsTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#2c3e50',
+  color: '#2c2140',
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -1467,7 +1523,7 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#e74c3c',
+  color: '#d0b3ff',
     marginBottom: 5,
   },
   statText: {
@@ -1480,13 +1536,13 @@ const styles = StyleSheet.create({
   },
   lifetimeStats: {
     borderTopWidth: 1,
-    borderTopColor: '#ecf0f1',
+  borderTopColor: 'rgba(255,255,255,0.4)',
     paddingTop: 15,
   },
   lifetimeTitle: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#2c3e50',
+  color: '#2c2140',
     textAlign: 'center',
     marginBottom: 10,
   },
@@ -1496,7 +1552,7 @@ const styles = StyleSheet.create({
   },
   lifetimeStat: {
     fontSize: 10,
-    color: '#7f8c8d',
+  color: '#c9bbff',
     textAlign: 'center',
   },
   
@@ -1516,7 +1572,7 @@ const styles = StyleSheet.create({
   quickActionsTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#2c3e50',
+  color: '#2c2140',
     textAlign: 'center',
     marginBottom: 15,
   },
@@ -1526,7 +1582,7 @@ const styles = StyleSheet.create({
   },
   quickActionButton: {
     alignItems: 'center',
-    backgroundColor: '#f8f9fa',
+  backgroundColor: '#f3edff',
     borderRadius: 15,
     padding: 15,
     flex: 1,
@@ -1544,7 +1600,7 @@ const styles = StyleSheet.create({
   
   // Task Management
   addButton: {
-    backgroundColor: '#27ae60',
+  backgroundColor: '#7e60c0',
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 25,
@@ -1619,7 +1675,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   taskCompleted: {
-    backgroundColor: '#f8f9fa',
+  backgroundColor: '#f6f0ff',
     opacity: 0.8,
   },
   taskContent: {
@@ -1636,17 +1692,17 @@ const styles = StyleSheet.create({
   },
   taskText: {
     fontSize: 14,
-    color: '#2c3e50',
+  color: '#2c2140',
     fontWeight: '500',
     marginBottom: 3,
   },
   taskTextCompleted: {
     textDecorationLine: 'line-through',
-    color: '#7f8c8d',
+  color: '#9b8ee5',
   },
   taskReward: {
     fontSize: 10,
-    color: '#7f8c8d',
+  color: '#b8a8ff',
   },
   taskCheckbox: {
     fontSize: 18,
@@ -1683,19 +1739,19 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   timerActive: {
-    backgroundColor: '#f8f9fa',
+  backgroundColor: '#f8f9fa',
     borderWidth: 3,
-    borderColor: '#27ae60',
+  borderColor: '#bb86fc',
   },
   timerText: {
     fontSize: 42,
     fontWeight: 'bold',
-    color: '#e74c3c',
+  color: '#4a148c',
     marginBottom: 5,
   },
   timerSession: {
     fontSize: 14,
-    color: '#7f8c8d',
+  color: '#e3d7ff',
     fontWeight: '600',
   },
   progressRing: {
@@ -1704,13 +1760,13 @@ const styles = StyleSheet.create({
     left: -3,
     right: -3,
     height: 6,
-    backgroundColor: '#ecf0f1',
+  backgroundColor: 'rgba(255,255,255,0.3)',
     borderRadius: 3,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#27ae60',
+  backgroundColor: '#bb86fc',
   },
   productivityContainer: {
     alignItems: 'center',
@@ -1718,13 +1774,13 @@ const styles = StyleSheet.create({
   },
   productivityLabel: {
     fontSize: 14,
-    color: '#ffffff',
+  color: '#f5e9ff',
     marginBottom: 5,
   },
   productivityBar: {
     width: 200,
     height: 8,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+  backgroundColor: 'rgba(255,255,255,0.25)',
     borderRadius: 4,
     overflow: 'hidden',
   },
@@ -1740,7 +1796,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   timerButton: {
-    backgroundColor: '#27ae60',
+  backgroundColor: '#7e60c0',
     paddingHorizontal: 30,
     paddingVertical: 15,
     borderRadius: 30,
@@ -1752,13 +1808,13 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   pauseButton: {
-    backgroundColor: '#f39c12',
+  backgroundColor: '#a881ff',
   },
   stopButton: {
-    backgroundColor: '#e67e22',
+  backgroundColor: '#8e44ad',
   },
   resumeButton: {
-    backgroundColor: '#3498db',
+  backgroundColor: '#6c4ab6',
     marginTop: 10,
   },
   timerButtonText: {
@@ -1774,7 +1830,7 @@ const styles = StyleSheet.create({
   focusStats: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: 'rgba(255,255,255,0.1)',
+  backgroundColor: 'rgba(255,255,255,0.12)',
     padding: 15,
     borderRadius: 15,
     marginBottom: 15,
@@ -1786,11 +1842,11 @@ const styles = StyleSheet.create({
   focusStatNumber: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#ffffff',
+  color: '#ffffff',
   },
   focusStatLabel: {
     fontSize: 10,
-    color: 'rgba(255,255,255,0.8)',
+  color: 'rgba(255,255,255,0.85)',
     marginTop: 2,
   },
   timerReward: {
@@ -1828,14 +1884,14 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   plotReady: {
-    backgroundColor: '#d5f4e6',
+  backgroundColor: '#e8ddff',
     borderWidth: 2,
-    borderColor: '#27ae60',
+  borderColor: '#bb86fc',
   },
   plotThirsty: {
-    backgroundColor: '#fdeaea',
+  backgroundColor: '#f2e5ff',
     borderWidth: 2,
-    borderColor: '#e74c3c',
+  borderColor: '#9b59b6',
   },
   plotEmoji: {
     fontSize: 32,
@@ -1843,7 +1899,7 @@ const styles = StyleSheet.create({
   },
   plotText: {
     fontSize: 9,
-    color: '#2c3e50',
+  color: '#2c2140',
     textAlign: 'center',
     fontWeight: 'bold',
   },
@@ -1853,13 +1909,13 @@ const styles = StyleSheet.create({
     left: 5,
     right: 5,
     height: 4,
-    backgroundColor: '#ecf0f1',
+  backgroundColor: 'rgba(255,255,255,0.3)',
     borderRadius: 2,
     overflow: 'hidden',
   },
   waterLevel: {
     height: '100%',
-    backgroundColor: '#3498db',
+  backgroundColor: '#9575cd',
   },
   fertilizerIndicator: {
     position: 'absolute',
@@ -1891,11 +1947,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 6,
+  borderWidth: 1,
+  borderColor: '#e8ddff',
   },
   gardenInfoTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#2c3e50',
+  color: '#2c2140',
     textAlign: 'center',
     marginBottom: 15,
   },
@@ -1920,24 +1978,24 @@ const styles = StyleSheet.create({
   plantTypeName: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#2c3e50',
+  color: '#2c2140',
   },
   plantTypeCost: {
     fontSize: 12,
-    color: '#7f8c8d',
+  color: '#8f7fd8',
   },
   plantTypeReward: {
     fontSize: 10,
-    color: '#27ae60',
+  color: '#7e60c0',
   },
   gardenTips: {
     borderTopWidth: 1,
-    borderTopColor: '#ecf0f1',
+  borderTopColor: 'rgba(255,255,255,0.4)',
     paddingTop: 15,
   },
   gardenTip: {
     fontSize: 12,
-    color: '#7f8c8d',
+  color: '#d6c8ff',
     marginBottom: 5,
   },
   
@@ -1963,17 +2021,17 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#2c3e50',
+  color: '#2c2140',
     textAlign: 'center',
     marginBottom: 20,
   },
   taskInput: {
     borderWidth: 2,
-    borderColor: '#ecf0f1',
+  borderColor: 'rgba(255,255,255,0.4)',
     borderRadius: 12,
     padding: 15,
     fontSize: 16,
-    color: '#2c3e50',
+  color: '#2c2140',
     minHeight: 100,
     textAlignVertical: 'top',
     marginBottom: 20,
@@ -1981,7 +2039,7 @@ const styles = StyleSheet.create({
   priorityLabel: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#2c3e50',
+  color: '#2c2140',
     marginBottom: 10,
   },
   priorityContainer: {
@@ -1995,7 +2053,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginHorizontal: 2,
-    backgroundColor: '#f8f9fa',
+  backgroundColor: '#f3edff',
   },
   priorityEmoji: {
     fontSize: 16,
@@ -2003,14 +2061,14 @@ const styles = StyleSheet.create({
   },
   priorityText: {
     fontSize: 10,
-    color: '#2c3e50',
+  color: '#2c2140',
     fontWeight: '600',
   },
   priorityTextActive: {
     color: '#ffffff',
   },
   rewardPreview: {
-    backgroundColor: '#f8f9fa',
+  backgroundColor: '#f3edff',
     padding: 15,
     borderRadius: 10,
     marginBottom: 20,
@@ -2018,12 +2076,12 @@ const styles = StyleSheet.create({
   rewardPreviewTitle: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#2c3e50',
+  color: '#2c2140',
     marginBottom: 5,
   },
   rewardPreviewText: {
     fontSize: 14,
-    color: '#27ae60',
+  color: '#bb86fc',
     fontWeight: 'bold',
   },
   modalButtons: {
@@ -2037,10 +2095,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   cancelButton: {
-    backgroundColor: '#95a5a6',
+  backgroundColor: '#8f7fd8',
   },
   addTaskButton: {
-    backgroundColor: '#e74c3c',
+  backgroundColor: '#9b59b6',
   },
   cancelButtonText: {
     color: '#ffffff',
@@ -2070,7 +2128,7 @@ const styles = StyleSheet.create({
   rewardModalTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2c3e50',
+  color: '#2c2140',
     marginBottom: 20,
   },
   rewardDisplay: {
@@ -2079,7 +2137,7 @@ const styles = StyleSheet.create({
   },
   rewardDisplayText: {
     fontSize: 18,
-    color: '#27ae60',
+  color: '#bb86fc',
     fontWeight: 'bold',
     marginBottom: 5,
   },
@@ -2089,7 +2147,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   rewardCloseButton: {
-    backgroundColor: '#e74c3c',
+  backgroundColor: '#9b59b6',
     paddingHorizontal: 30,
     paddingVertical: 15,
     borderRadius: 25,
@@ -2115,24 +2173,24 @@ const styles = StyleSheet.create({
   levelUpTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#e74c3c',
+  color: '#bb86fc',
     marginBottom: 15,
     textAlign: 'center',
   },
   levelUpLevel: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#f39c12',
+  color: '#e0c3fc',
     marginBottom: 15,
   },
   levelUpMessage: {
     fontSize: 16,
-    color: '#2c3e50',
+  color: '#2c2140',
     textAlign: 'center',
     marginBottom: 25,
   },
   levelUpButton: {
-    backgroundColor: '#27ae60',
+  backgroundColor: '#7e60c0',
     paddingHorizontal: 40,
     paddingVertical: 15,
     borderRadius: 30,
