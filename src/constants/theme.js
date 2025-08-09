@@ -1,35 +1,39 @@
-// Color palette for PurrPlan World app
+// Color palette for PurrPlan World app (Purple theme)
 export const colors = {
-  // Primary colors
-  primary: '#E67E22', // Warm orange
-  primaryDark: '#D35400',
-  primaryLight: '#F39C12',
+  // Brand
+  primary: '#4a148c', // Deep purple
+  primaryDark: '#311b92', // Indigo-ish dark purple
+  primaryLight: '#5e35b1',
+  accent: '#8e24aa', // Vivid purple accent
 
-  // Pastel background colors
-  background: '#FFF5F0', // Soft peach cream
-  cardPeach: '#FFE5D9', // Light peach for My Tasks
-  cardMint: '#E8F5E8', // Mint green for Schedule  
-  cardBlue: '#E5F3FF', // Soft blue for Reminders
+  // Surfaces
+  background: '#4a148c',
+  surface: '#FFFFFF',
+  surfaceAlt: '#f3e5f5',
+  wall: '#ede7f6', // Room wall
+  floor: '#d1c4e9', // Room floor
 
-  // Text colors
-  textPrimary: '#2C3E50', // Dark blue-gray
-  textSecondary: '#7F8C8D', // Medium gray
-  textLight: '#BDC3C7', // Light gray
+  // Text
+  textPrimary: '#2c3e50',
+  textSecondary: '#7f8c8d',
+  textOnPrimary: '#FFFFFF',
 
-  // Accent colors
+  // Semantic
+  success: '#27ae60',
+  warning: '#f39c12',
+  danger: '#e74c3c',
+
+  // Decorative
   white: '#FFFFFF',
-  accent: '#FFB6C1', // Soft pink for highlights
-  success: '#27AE60',
-  warning: '#F39C12',
-  error: '#E74C3C',
+  outline: '#4a148c',
 
-  // Shadow colors
+  // Shadows
   shadowLight: 'rgba(0, 0, 0, 0.1)',
   shadowMedium: 'rgba(0, 0, 0, 0.15)',
 
-  // Gradient colors
-  gradientStart: '#FFF5F0',
-  gradientEnd: '#FFE5D9',
+  // Gradients
+  gradientStart: '#ede7f6',
+  gradientEnd: '#d1c4e9',
 };
 
 // Common styling constants

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import Svg, { Circle, G, Defs, Pattern } from 'react-native-svg';
+import { colors } from '../constants/theme';
 
 const { width, height } = Dimensions.get('window');
 
@@ -8,13 +9,13 @@ const PawPrintBackground = () => {
   const PawPrint = ({ x, y, opacity = 0.05, scale = 1 }) => (
     <G transform={`translate(${x}, ${y}) scale(${scale})`} opacity={opacity}>
       {/* Main paw pad */}
-      <Circle cx="15" cy="20" r="8" fill="#E67E22" />
+  <Circle cx="15" cy="20" r="8" fill={colors.accent} />
       
       {/* Toe pads */}
-      <Circle cx="8" cy="10" r="4" fill="#E67E22" />
-      <Circle cx="15" cy="8" r="4" fill="#E67E22" />
-      <Circle cx="22" cy="10" r="4" fill="#E67E22" />
-      <Circle cx="25" cy="16" r="3" fill="#E67E22" />
+  <Circle cx="8" cy="10" r="4" fill={colors.accent} />
+  <Circle cx="15" cy="8" r="4" fill={colors.accent} />
+  <Circle cx="22" cy="10" r="4" fill={colors.accent} />
+  <Circle cx="25" cy="16" r="3" fill={colors.accent} />
     </G>
   );
 

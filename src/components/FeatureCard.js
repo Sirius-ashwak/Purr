@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { colors } from '../constants/theme';
 
 const FeatureCard = ({ title, icon, color, count, onPress }) => {
   const scaleAnim = new Animated.Value(1);
@@ -33,8 +34,8 @@ const FeatureCard = ({ title, icon, color, count, onPress }) => {
         ]}
       >
         <View style={styles.leftSection}>
-          <View style={[styles.iconContainer, { backgroundColor: '#FFFFFF' }]}>
-            <Ionicons name={icon} size={24} color="#2C3E50" />
+          <View style={[styles.iconContainer, { backgroundColor: colors.surface }]}> 
+            <Ionicons name={icon} size={24} color={colors.textPrimary} />
           </View>
           <View style={styles.textContainer}>
             <Text style={styles.title}>{title}</Text>
@@ -43,7 +44,7 @@ const FeatureCard = ({ title, icon, color, count, onPress }) => {
         </View>
         
         <View style={styles.rightSection}>
-          <Ionicons name="chevron-forward" size={20} color="#7F8C8D" />
+          <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
         </View>
       </Animated.View>
     </TouchableOpacity>
@@ -106,12 +107,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#2C3E50',
+  color: colors.textPrimary,
     marginBottom: 3,
   },
   count: {
     fontSize: 14,
-    color: '#7F8C8D',
+  color: colors.textSecondary,
     fontWeight: '400',
   },
   rightSection: {

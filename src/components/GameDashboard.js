@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { colors } from '../constants/theme';
 import { useGame } from '../context/GameContext';
 
 const GameDashboard = () => {
@@ -24,17 +25,17 @@ const GameDashboard = () => {
       {/* Currency Display */}
       <View style={styles.currencySection}>
         <View style={styles.currencyItem}>
-          <Ionicons name="fish" size={20} color="#E67E22" />
+          <Ionicons name="fish" size={20} color={colors.accent} />
           <Text style={styles.currencyAmount}>{state.user.fishTreats}</Text>
           <Text style={styles.currencyLabel}>Fish Treats</Text>
         </View>
         <View style={styles.currencyItem}>
-          <Ionicons name="leaf" size={20} color="#27AE60" />
+          <Ionicons name="leaf" size={20} color={colors.success} />
           <Text style={styles.currencyAmount}>{state.user.seeds}</Text>
           <Text style={styles.currencyLabel}>Seeds</Text>
         </View>
         <View style={styles.currencyItem}>
-          <Ionicons name="trophy" size={20} color="#F1C40F" />
+          <Ionicons name="trophy" size={20} color={colors.warning} />
           <Text style={styles.currencyAmount}>{state.user.level}</Text>
           <Text style={styles.currencyLabel}>Level</Text>
         </View>
@@ -47,7 +48,7 @@ const GameDashboard = () => {
           <Text style={styles.catBreed}>{activeCat?.breed} • {activeCat?.personality}</Text>
           <Text style={styles.catAbility}>💫 {activeCat?.abilityDescription}</Text>
         </View>
-        <Ionicons name="chevron-forward" size={20} color="#7F8C8D" />
+  <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
       </TouchableOpacity>
 
       {/* Quick Stats */}
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 20,
-    backgroundColor: '#FFFFFF',
+  backgroundColor: colors.surface,
     borderRadius: 15,
     padding: 15,
     shadowColor: '#000',
@@ -126,19 +127,19 @@ const styles = StyleSheet.create({
   currencyAmount: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#2C3E50',
+  color: colors.textPrimary,
     marginTop: 5,
   },
   currencyLabel: {
     fontSize: 12,
-    color: '#7F8C8D',
+  color: colors.textSecondary,
     marginTop: 2,
   },
   activeCatSection: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#F8F9FA',
+  backgroundColor: '#F8F9FA',
     borderRadius: 15,
     padding: 15,
     marginBottom: 20,
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
   catName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2C3E50',
+  color: colors.textPrimary,
     marginBottom: 2,
   },
   catBreed: {
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
   },
   catAbility: {
     fontSize: 12,
-    color: '#E67E22',
+  color: colors.accent,
     fontStyle: 'italic',
   },
   statsGrid: {
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#E67E22',
+  color: colors.accent,
   },
   statLabel: {
     fontSize: 12,
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#27AE60',
+  backgroundColor: colors.success,
     borderRadius: 4,
   },
   progressText: {
@@ -236,11 +237,11 @@ const styles = StyleSheet.create({
   gardenValue: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#27AE60',
+  color: colors.success,
   },
   gardenLabel: {
     fontSize: 12,
-    color: '#7F8C8D',
+  color: colors.textSecondary,
     marginTop: 2,
   },
 });

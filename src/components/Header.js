@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import PawClockLogo from './PawClockLogo';
+import { colors } from '../constants/theme';
 
 const Header = () => {
   return (
@@ -13,10 +14,10 @@ const Header = () => {
       
       <View style={styles.rightSection}>
         <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="search-outline" size={24} color="#2C3E50" />
+          <Ionicons name="search-outline" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="person-circle-outline" size={24} color="#2C3E50" />
+          <Ionicons name="person-circle-outline" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
       </View>
     </View>
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#2C3E50',
+  color: colors.textPrimary,
     marginLeft: 10,
   },
   rightSection: {

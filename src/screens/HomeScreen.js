@@ -8,6 +8,7 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { colors } from '../constants/theme';
 import { useGame } from '../context/GameContext';
 import Header from '../components/Header';
 import CatMascot from '../components/CatMascot';
@@ -133,7 +134,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF5F0',
+  backgroundColor: colors.background,
   },
   content: {
     flex: 1,
@@ -149,12 +150,12 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#2C3E50',
+    color: colors.white,
     marginBottom: 5,
   },
   subText: {
     fontSize: 16,
-    color: '#7F8C8D',
+    color: 'rgba(255,255,255,0.85)',
     fontWeight: '400',
   },
   mascotSection: {
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#2C3E50',
+    color: colors.white,
     marginBottom: 15,
   },
   cardsSection: {
@@ -183,7 +184,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     borderLeftWidth: 4,
-    borderLeftColor: '#9B59B6',
+    borderLeftColor: colors.accent,
   },
   aiContent: {
     flexDirection: 'row',
@@ -196,12 +197,12 @@ const styles = StyleSheet.create({
   aiTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2C3E50',
+    color: colors.textPrimary,
     marginBottom: 5,
   },
   aiDescription: {
     fontSize: 14,
-    color: '#7F8C8D',
+    color: colors.textSecondary,
     lineHeight: 20,
   },
   motivationSection: {
@@ -217,7 +218,7 @@ const styles = StyleSheet.create({
   },
   motivationText: {
     fontSize: 14,
-    color: '#2C3E50',
+    color: colors.textPrimary,
     textAlign: 'center',
     lineHeight: 22,
     fontStyle: 'italic',

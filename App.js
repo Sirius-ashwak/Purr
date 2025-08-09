@@ -7,6 +7,7 @@ import {
   StatusBar, 
   Platform, 
   TouchableOpacity, 
+  TouchableWithoutFeedback,
   ScrollView,
   TextInput,
   Modal,
@@ -15,6 +16,8 @@ import {
   Vibration
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { colors } from './src/constants/theme';
+import Svg, { Circle } from 'react-native-svg';
 
 // Note: Avoid using Dimensions for now to reduce layout edge cases
 
@@ -96,228 +99,223 @@ export default function App() {
   const [rewardData, setRewardData] = useState(null);
   const [achievements, setAchievements] = useState([]);
   const [notifications, setNotifications] = useState([]);
-
-  // Safe active cat fallback
-  const activeCat = (cats && cats.length > 0) ? cats[0] : {
-    id: 'default',
-    name: 'Whiskers',
-    breed: 'tabby',
-    mood: 'Happy',
-    energy: 80,
-    happiness: 80,
-    isActive: true,
-    color: '#FF6B6B',
-    accessory: '🎀',
-    favoriteActivity: 'gardening',
-  };
-
-  // Purple gradient colors (top -> bottom)
-  const gradientColors = [
-    '#2e004f', '#3a0a6a', '#4a148c', '#5b2ca3', '#6c4ab6', '#7e60c0', '#8e79d6', '#9b8ee5'
-  ];
-
-  const GradientBackground = () => (
-    <View style={styles.gradientContainer}>
-      {gradientColors.map((c, i) => (
-        <View key={i} style={[styles.gradientBand, { backgroundColor: c }]} />
-      ))}
-    </View>
-  );
+  const [showRoomMenu, setShowRoomMenu] = useState(false);
   
-  // Plant Types Configuration
-  const plantTypes = {
-    tomato: { emoji: '🍅', name: 'Tomato', cost: 10, reward: { treats: 20, seeds: 5, exp: 25, gems: 1 }, growTime: 120000 },
-    carrot: { emoji: '🥕', name: 'Carrot', cost: 15, reward: { treats: 30, seeds: 8, exp: 35, gems: 1 }, growTime: 180000 },
-    flower: { emoji: '🌸', name: 'Flower', cost: 20, reward: { treats: 15, seeds: 12, exp: 40, gems: 2 }, growTime: 240000 },
-    tree: { emoji: '🌳', name: 'Tree', cost: 50, reward: { treats: 100, seeds: 25, exp: 100, gems: 5 }, growTime: 600000 },
-  };
-  
-  // Task Priority Configuration
+  // Config: Task priorities and Garden plant types
   const priorityConfig = {
-    low: { color: '#95a5a6', multiplier: 1, emoji: '🟢' },
-    medium: { color: '#f39c12', multiplier: 1.5, emoji: '🟡' },
-    high: { color: '#e74c3c', multiplier: 2, emoji: '🔴' },
-    urgent: { color: '#8e44ad', multiplier: 3, emoji: '🟣' },
+    low: { color: '#27ae60', emoji: '🟢', multiplier: 0.8 },
+    medium: { color: '#f1c40f', emoji: '🟡', multiplier: 1 },
+    high: { color: '#e67e22', emoji: '🟠', multiplier: 1.25 },
+    urgent: { color: '#e74c3c', emoji: '🔴', multiplier: 1.5 },
   };
   
-  // Initialize App
-  useEffect(() => {
-    initializeApp();
-    startCatAnimation();
-    checkDailyStreak();
-  }, []);
-  
-  // Auto-save game data
-  useEffect(() => {
-    const saveTimeout = setTimeout(() => {
-      saveGameData();
-    }, 1000);
-    return () => clearTimeout(saveTimeout);
-  }, [gameState, tasks, garden, cats]);
-  
-  // Focus timer logic
-  useEffect(() => {
-    let interval;
-    if (focusTimer.isRunning && focusTimer.timeLeft > 0) {
-      interval = setInterval(() => {
-        setFocusTimer(prev => ({
-          ...prev,
-          timeLeft: Math.max(0, prev.timeLeft - 1),
-        }));
-      }, 1000);
-    } else if (focusTimer.timeLeft === 0 && focusTimer.isRunning) {
-      completeFocusSession();
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [focusTimer.isRunning, focusTimer.timeLeft]);
-  
-  // Garden auto-growth logic
-  useEffect(() => {
-    const growthInterval = setInterval(() => {
-      updateGardenGrowth();
-    }, 30000); // Check every 30 seconds
-    
-    return () => clearInterval(growthInterval);
-  }, [garden]);
-  
-  // Initialize App
-  const initializeApp = async () => {
-    await loadGameData();
-    showWelcomeNotification();
+  const plantTypes = {
+    tomato: {
+      name: 'Tomato',
+      emoji: '🍅',
+      cost: 10,
+      growTime: 60000, // 60s
+      reward: { treats: 20, seeds: 10, exp: 35, gems: 0 },
+    },
+    carrot: {
+      name: 'Carrot',
+      emoji: '🥕',
+      cost: 15,
+      growTime: 90000, // 90s
+      reward: { treats: 30, seeds: 14, exp: 45, gems: 1 },
+    },
+    flower: {
+      name: 'Flower',
+      emoji: '🌸',
+      cost: 20,
+      growTime: 120000, // 120s
+      reward: { treats: 40, seeds: 18, exp: 60, gems: 1 },
+    },
+    tree: {
+      name: 'Tiny Tree',
+      emoji: '🌳',
+      cost: 30,
+      reward: { treats: 60, seeds: 25, exp: 90, gems: 2 },
+    },
   };
-  
-  // Cat Animations
-  const startCatAnimation = () => {
+  // Screen Rendering Functions
+  const renderHomeScreen = () => {
+    const expPct = Math.max(0, Math.min(100, gameState.experienceToNext ? (gameState.experience / gameState.experienceToNext) * 100 : 0));
+    const activeCat = cats[0] || { name: 'Whiskers', mood: 'Happy', energy: 100, happiness: 100, color: '#FF6B6B', accessory: '🎀' };
     const bounce = () => {
       Animated.sequence([
-        Animated.timing(catBounceAnim, { 
-          toValue: 1.15, 
-          duration: 2000, 
-          useNativeDriver: true 
-        }),
-        Animated.timing(catBounceAnim, { 
-          toValue: 1, 
-          duration: 2000, 
-          useNativeDriver: true 
-        }),
-      ]).start(() => bounce());
+        Animated.spring(catBounceAnim, { toValue: 1.1, useNativeDriver: true }),
+        Animated.spring(catBounceAnim, { toValue: 1, useNativeDriver: true }),
+      ]).start();
     };
-    bounce();
+    return (
+      <View style={styles.roomContainer}>
+        {/* Wall and top progress bar */}
+        <View style={styles.roomWall}>
+          <View style={styles.topProgressWrap}>
+            <View style={styles.topProgressBar}>
+              <View style={[styles.topProgressFill, { width: `${expPct}%` }]} />
+            </View>
+          </View>
+          {/* Top-left currencies */}
+          <View style={styles.roomCurrencies}>
+            <View style={styles.roomCurrencyBox}>
+              <View style={styles.roomCurrencyIcon}><Text>🐟</Text></View>
+              <View style={styles.roomCurrencyTexts}>
+                <Text style={styles.roomCurrencyValue}>{gameState.fishTreats}</Text>
+                <Text style={styles.roomCurrencyLabel}>Treats</Text>
+              </View>
+            </View>
+            <View style={styles.roomCurrencyBox}>
+              <View style={styles.roomCurrencyIcon}><Text>🌱</Text></View>
+              <View style={styles.roomCurrencyTexts}>
+                <Text style={styles.roomCurrencyValue}>{gameState.gardenSeeds}</Text>
+                <Text style={styles.roomCurrencyLabel}>Seeds</Text>
+              </View>
+            </View>
+            <View style={styles.roomCurrencyBox}>
+              <View style={styles.roomCurrencyIcon}><Text>💎</Text></View>
+              <View style={styles.roomCurrencyTexts}>
+                <Text style={styles.roomCurrencyValue}>{gameState.crystalGems}</Text>
+                <Text style={styles.roomCurrencyLabel}>Gems</Text>
+              </View>
+            </View>
+          </View>
+          {/* Simple window and shelf decor */}
+          <View style={styles.roomWindow} />
+        </View>
+
+        {/* Floor with bed and bunny */}
+        <View style={styles.roomFloor}>
+          <View style={styles.roomBed}>
+            <View style={styles.roomPillow} />
+          </View>
+          <TouchableOpacity activeOpacity={0.8} onPress={bounce} style={styles.roomBunny}>
+            <Animated.View style={{ transform: [{ scale: catBounceAnim }] }}>
+              <Text style={styles.roomBunnyEmoji}>🐰</Text>
+            </Animated.View>
+          </TouchableOpacity>
+        </View>
+
+        {/* Hamburger toggle for room menu */}
+        <TouchableOpacity
+          style={styles.roomMenuToggle}
+          activeOpacity={0.9}
+          onPress={() => setShowRoomMenu(prev => !prev)}
+        >
+          <Text style={styles.roomMenuToggleIcon}>☰</Text>
+        </TouchableOpacity>
+
+        {/* Overlay to close menu when tapping outside */}
+        {showRoomMenu && (
+          <TouchableWithoutFeedback onPress={() => setShowRoomMenu(false)}>
+            <View style={styles.roomMenuOverlay} />
+          </TouchableWithoutFeedback>
+        )}
+
+        {/* Right-side circular menu (toggled) */}
+        {showRoomMenu && (
+          <View style={styles.roomRightMenu}>
+            {(() => {
+              const all = [
+                { k: 'guide', icon: '📖', action: () => addNotification('Open Guide (coming soon)') },
+                { k: 'stats', icon: '📊', action: () => addNotification('Stats (coming soon)') },
+                { k: 'shop', icon: '🛒', action: () => addNotification('Shop (coming soon)') },
+                { k: 'tasks', icon: '📝', action: () => setCurrentScreen('tasks') },
+                { k: 'notes', icon: '📄', action: () => addNotification('Notes (coming soon)') },
+                { k: 'music', icon: '🎵', action: () => addNotification('Music (coming soon)') },
+                { k: 'announce', icon: '📣', action: () => addNotification('Announcements!') },
+                { k: 'profile', icon: '👤', action: () => addNotification('Profile (coming soon)') },
+                { k: 'settings', icon: '⚙️', action: () => addNotification('Settings (coming soon)') },
+                { k: 'camera', icon: '📷', action: () => addNotification('Screenshot saved (pretend)') },
+              ];
+              const grid9 = all.slice(0, 9);
+              const extras = all.slice(9);
+              return (
+                <>
+                  <View style={styles.roomMenuGrid}>
+                    {grid9.map(btn => (
+                      <TouchableOpacity key={btn.k} style={styles.circleMenuBtn} onPress={() => { btn.action(); setShowRoomMenu(false); }}>
+                        <Text style={styles.circleMenuIcon}>{btn.icon}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                  {extras.length > 0 && (
+                    <View style={styles.roomMenuExtrasRow}>
+                      {extras.map(btn => (
+                        <TouchableOpacity key={btn.k} style={styles.circleMenuBtn} onPress={() => { btn.action(); setShowRoomMenu(false); }}>
+                          <Text style={styles.circleMenuIcon}>{btn.icon}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  )}
+                  <View style={styles.roomMenuActionsRow}>
+                    <TouchableOpacity style={[styles.circleMenuBtn, styles.ideaBtn]} onPress={() => { setShowTaskModal(true); setShowRoomMenu(false); }}>
+                      <Text style={styles.circleMenuIcon}>💡</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.circleMenuBtn, styles.confirmBtn]} onPress={() => { addNotification('Great job! ✅'); setShowRoomMenu(false); }}>
+                      <Text style={styles.circleMenuIcon}>✅</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              );
+            })()}
+          </View>
+        )}
+      </View>
+    );
   };
   
-  // Coin Animation
-  const animateCoinEarn = () => {
-    coinAnim.setValue(0);
-    Animated.sequence([
-      Animated.timing(coinAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
-      Animated.timing(coinAnim, { toValue: 0, duration: 500, useNativeDriver: true }),
-    ]).start();
-  };
-  
-  // Level Up Animation
-  const animateLevelUp = () => {
-    Vibration.vibrate(200);
-    levelUpAnim.setValue(0);
-    Animated.sequence([
-      Animated.spring(levelUpAnim, { toValue: 1, useNativeDriver: true }),
-      Animated.timing(levelUpAnim, { toValue: 0, duration: 2000, useNativeDriver: true }),
-    ]).start();
-  };
-  
-  // Save/Load Game Data
-  const saveGameData = async () => {
-    try {
-      const data = {
-        gameState,
-        tasks,
-        garden,
-        cats,
-        focusTimer: { ...focusTimer, isRunning: false },
-        achievements,
-        lastSaved: new Date().toISOString(),
-      };
-      await AsyncStorage.setItem('purrplan_premium_data', JSON.stringify(data));
-    } catch (error) {
-      console.error('Failed to save game data:', error);
-    }
-  };
-  
-  const loadGameData = async () => {
-    try {
-      const savedData = await AsyncStorage.getItem('purrplan_premium_data');
-      if (savedData) {
-        const data = JSON.parse(savedData);
-        setGameState(data.gameState || gameState);
-        setTasks(data.tasks || []);
-        setGarden(data.garden || garden);
-        setCats(data.cats || cats);
-        setFocusTimer(prev => ({ ...prev, ...data.focusTimer, isRunning: false }));
-        setAchievements(data.achievements || []);
-      }
-    } catch (error) {
-      console.error('Failed to load game data:', error);
-    }
-  };
-  
-  // Daily Streak System
-  const checkDailyStreak = () => {
-    const today = new Date().toDateString();
-    const yesterday = new Date(Date.now() - 86400000).toDateString();
-    
-    if (gameState.lastActiveDate === yesterday) {
-      setGameState(prev => ({ ...prev, streak: prev.streak + 1, lastActiveDate: today }));
-    } else if (gameState.lastActiveDate !== today) {
-      setGameState(prev => ({ ...prev, streak: 1, lastActiveDate: today }));
-    }
-  };
-  
-  // Reward System
+  // Rewards and leveling
   const earnRewards = (treats, seeds, exp, gems = 0, source = 'activity') => {
-    animateCoinEarn();
-    
+    // Animate coin pulse
+    Animated.sequence([
+      Animated.timing(coinAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+      Animated.timing(coinAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
+    ]).start();
+
     setGameState(prev => {
-      const newExp = prev.experience + exp;
-      const levelUp = newExp >= prev.experienceToNext;
-      
-      const newState = {
-        ...prev,
-        fishTreats: prev.fishTreats + treats,
-        gardenSeeds: prev.gardenSeeds + seeds,
-        crystalGems: prev.crystalGems + gems,
-        experience: levelUp ? newExp - prev.experienceToNext : newExp,
-        level: levelUp ? prev.level + 1 : prev.level,
-        experienceToNext: levelUp ? Math.floor(prev.experienceToNext * 1.5) : prev.experienceToNext,
-      };
-      
-      if (levelUp) {
-        animateLevelUp();
-        setShowLevelUpModal(true);
-        addNotification(`🎉 Level Up! Welcome to Level ${newState.level}!`);
+      let nextExp = (prev.experience || 0) + (exp || 0);
+      let nextLevel = prev.level || 1;
+      let expToNext = prev.experienceToNext || 100;
+      let leveledUp = false;
+
+      // Level progression: if over threshold, carry over remainder
+      while (nextExp >= expToNext) {
+        nextExp -= expToNext;
+        nextLevel += 1;
+        expToNext = Math.round(expToNext * 1.15);
+        leveledUp = true;
       }
-      
-      return newState;
+
+      if (leveledUp) {
+        setShowLevelUpModal(true);
+        // Pop level-up animation
+        levelUpAnim.setValue(0.8);
+        Animated.spring(levelUpAnim, { toValue: 1, useNativeDriver: true }).start();
+        try { Vibration.vibrate(50); } catch {}
+      }
+
+      return {
+        ...prev,
+        fishTreats: (prev.fishTreats || 0) + (treats || 0),
+        gardenSeeds: (prev.gardenSeeds || 0) + (seeds || 0),
+        crystalGems: (prev.crystalGems || 0) + (gems || 0),
+        experience: nextExp,
+        experienceToNext: expToNext,
+      };
     });
-    
-    // Update cat happiness
-    setCats(prev => prev.map(cat => ({
-      ...cat,
-      happiness: Math.min(100, cat.happiness + 5),
-      energy: Math.min(100, cat.energy + 3),
-    })));
-    
-    // Show reward modal
-    setRewardData({ treats, seeds, exp, gems, source });
-    setShowRewardModal(true);
+
+  // Show reward modal
+  setRewardData({ treats, seeds, exp, gems, source });
+  setShowRewardModal(true);
   };
   
   // Task Management
   const addTask = () => {
     if (newTaskText.trim()) {
       const baseReward = { treats: 15, seeds: 8, exp: 30, gems: 1 };
-      const multiplier = priorityConfig[selectedPriority].multiplier;
+      const multiplier = (priorityConfig[selectedPriority]?.multiplier) ?? 1;
       
       const newTask = {
         id: Date.now().toString(),
@@ -362,6 +360,34 @@ export default function App() {
     setTasks(prev => prev.filter(t => t.id !== taskId));
     addNotification('🗑️ Task deleted');
   };
+
+  // Effects: focus timer tick, garden upkeep, welcome toast
+  useEffect(() => {
+    if (!focusTimer.isRunning) return;
+    const id = setInterval(() => {
+      setFocusTimer(prev => {
+        const next = { ...prev, timeLeft: Math.max(0, prev.timeLeft - 1) };
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [focusTimer.isRunning]);
+
+  useEffect(() => {
+    if (focusTimer.isRunning && focusTimer.timeLeft === 0) {
+      completeFocusSession();
+    }
+  }, [focusTimer.isRunning, focusTimer.timeLeft]);
+
+  useEffect(() => {
+    const id = setInterval(() => updateGardenGrowth(), 10000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const id = setTimeout(() => showWelcomeNotification(), 500);
+    return () => clearTimeout(id);
+  }, []);
   
   // Focus Timer System
   const startFocusSession = () => {
@@ -599,147 +625,17 @@ export default function App() {
     return moods[Math.floor(Math.random() * moods.length)];
   };
   
-  
-  // Screen Rendering Functions
-  const renderHomeScreen = () => (
-    <ScrollView style={styles.screenContainer} showsVerticalScrollIndicator={false}>
-      {/* Dynamic Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>🐾 PurrPlan World</Text>
-        <Text style={styles.greeting}>{getTimeOfDayGreeting()}, Planner!</Text>
-        <Text style={styles.tagline}>Level {gameState.level} • {gameState.streak} day streak 🔥</Text>
-      </View>
-
-      {/* Enhanced Currency Display */}
-      <View style={styles.currencyContainer}>
-        <Animated.View style={[
-          styles.currencyItem, 
-          { transform: [{ scale: coinAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.25] }) }] }
-        ]}>
-          <Text style={styles.currencyIcon}>🐟</Text>
-          <Text style={styles.currencyValue}>{gameState.fishTreats}</Text>
-          <Text style={styles.currencyLabel}>Treats</Text>
-        </Animated.View>
-        <Animated.View style={[
-          styles.currencyItem, 
-          { transform: [{ scale: coinAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.25] }) }] }
-        ]}>
-          <Text style={styles.currencyIcon}>🌱</Text>
-          <Text style={styles.currencyValue}>{gameState.gardenSeeds}</Text>
-          <Text style={styles.currencyLabel}>Seeds</Text>
-        </Animated.View>
-        <Animated.View style={[
-          styles.currencyItem, 
-          { transform: [{ scale: coinAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.25] }) }] }
-        ]}>
-          <Text style={styles.currencyIcon}>💎</Text>
-          <Text style={styles.currencyValue}>{gameState.crystalGems}</Text>
-          <Text style={styles.currencyLabel}>Gems</Text>
-        </Animated.View>
-      </View>
-
-      {/* Enhanced Cat Display */}
-      <View style={styles.catContainer}>
-        <Animated.View style={[styles.catMascot, { 
-          transform: [{ scale: catBounceAnim }],
-          backgroundColor: activeCat.color 
-        }]}>
-          <Text style={styles.catEmoji}>{getCatMoodEmoji()}</Text>
-          <Text style={styles.catAccessory}>{activeCat.accessory}</Text>
-        </Animated.View>
-        <Text style={styles.catName}>{activeCat.name}</Text>
-        <Text style={styles.catStatus}>
-          Mood: {activeCat.mood} • Energy: {activeCat.energy}/100 • ❤️ {activeCat.happiness}/100
-        </Text>
-        
-        {/* Enhanced Progress Bar */}
-        <View style={styles.expBarContainer}>
-          <View style={styles.expBar}>
-            <Animated.View style={[
-              styles.expFill, 
-              { 
-                width: `${Math.max(0, Math.min(100, gameState.experienceToNext ? (gameState.experience / gameState.experienceToNext) * 100 : 0))}%` 
-              }
-            ]} />
-            <Text style={styles.expText}>
-              {gameState.experience}/{gameState.experienceToNext} XP
-            </Text>
-          </View>
-          <Animated.View style={[
-            styles.levelUpIndicator,
-            { transform: [{ scale: levelUpAnim }] }
-          ]}>
-            <Text style={styles.levelUpText}>🎉</Text>
-          </Animated.View>
-        </View>
-      </View>
-
-      {/* Enhanced Stats Dashboard */}
-      <View style={styles.statsCard}>
-        <Text style={styles.statsTitle}>📊 Your Progress Today</Text>
-        <View style={styles.statsGrid}>
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>{tasks.filter(t => t.completed).length}</Text>
-            <Text style={styles.statText}>Tasks Done</Text>
-            <Text style={styles.statEmoji}>✅</Text>
-          </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>{focusTimer.sessionsToday}</Text>
-            <Text style={styles.statText}>Focus Sessions</Text>
-            <Text style={styles.statEmoji}>🎯</Text>
-          </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>{garden.filter(p => p.stage === 'ready').length}</Text>
-            <Text style={styles.statText}>Ready Plants</Text>
-            <Text style={styles.statEmoji}>🌿</Text>
-          </View>
-        </View>
-        
-        {/* Lifetime Stats */}
-        <View style={styles.lifetimeStats}>
-          <Text style={styles.lifetimeTitle}>🏆 Lifetime Stats</Text>
-          <View style={styles.lifetimeGrid}>
-            <Text style={styles.lifetimeStat}>📝 {gameState.totalTasksCompleted} tasks</Text>
-            <Text style={styles.lifetimeStat}>⏰ {gameState.totalFocusMinutes} minutes</Text>
-            <Text style={styles.lifetimeStat}>🌱 {gameState.totalPlantsHarvested} harvests</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Quick Actions */}
-      <View style={styles.quickActionsCard}>
-        <Text style={styles.quickActionsTitle}>⚡ Quick Actions</Text>
-        <View style={styles.quickActionsGrid}>
-          <TouchableOpacity 
-            style={styles.quickActionButton}
-            onPress={() => setCurrentScreen('tasks')}
-          >
-            <Text style={styles.quickActionEmoji}>📝</Text>
-            <Text style={styles.quickActionText}>Add Task</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.quickActionButton}
-            onPress={() => setCurrentScreen('focus')}
-          >
-            <Text style={styles.quickActionEmoji}>🎯</Text>
-            <Text style={styles.quickActionText}>Focus Now</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.quickActionButton}
-            onPress={() => setCurrentScreen('garden')}
-          >
-            <Text style={styles.quickActionEmoji}>🌱</Text>
-            <Text style={styles.quickActionText}>Check Garden</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
-  );
+  // Legacy home (ScrollView) removed in favor of room-style home
 
   const renderTasksScreen = () => (
-    <View style={styles.screenContainer}>
+  <View style={[styles.screenContainer, styles.lightScreen]}>
+      {/* Purple gradient-like decor */}
+      <View pointerEvents="none" style={styles.screenDecor}>
+        <View style={styles.decorationBlobOne} />
+        <View style={styles.decorationBlobTwo} />
+      </View>
       <View style={styles.screenHeader}>
-        <Text style={styles.screenTitle}>📝 Task Manager</Text>
+    <Text style={[styles.screenTitle, styles.screenTitleDark]}>📝 Quest Board</Text>
         <TouchableOpacity 
           style={styles.addButton}
           onPress={() => setShowTaskModal(true)}
@@ -749,27 +645,27 @@ export default function App() {
       </View>
       
       {/* Task Stats */}
-      <View style={styles.taskStats}>
+    <View style={styles.taskStats}>
         <View style={styles.taskStatItem}>
-          <Text style={styles.taskStatNumber}>{tasks.filter(t => !t.completed).length}</Text>
-          <Text style={styles.taskStatLabel}>Pending</Text>
+      <Text style={styles.taskStatNumber}>{tasks.filter(t => !t.completed).length}</Text>
+      <Text style={styles.taskStatLabel}>Pending</Text>
         </View>
         <View style={styles.taskStatItem}>
-          <Text style={styles.taskStatNumber}>{tasks.filter(t => t.completed).length}</Text>
-          <Text style={styles.taskStatLabel}>Completed</Text>
+      <Text style={styles.taskStatNumber}>{tasks.filter(t => t.completed).length}</Text>
+      <Text style={styles.taskStatLabel}>Completed</Text>
         </View>
         <View style={styles.taskStatItem}>
-          <Text style={styles.taskStatNumber}>{gameState.totalTasksCompleted}</Text>
-          <Text style={styles.taskStatLabel}>Total Done</Text>
+      <Text style={styles.taskStatNumber}>{gameState.totalTasksCompleted}</Text>
+      <Text style={styles.taskStatLabel}>Total Done</Text>
         </View>
       </View>
       
-      <ScrollView style={styles.tasksList} showsVerticalScrollIndicator={false}>
+  <ScrollView style={styles.tasksList} showsVerticalScrollIndicator={false}>
         {tasks.length === 0 ? (
-          <View style={styles.emptyState}>
+      <View style={styles.emptyState}>
             <Text style={styles.emptyStateEmoji}>📋</Text>
-            <Text style={styles.emptyStateText}>No tasks yet!</Text>
-            <Text style={styles.emptyStateSubtext}>Add your first task to start earning rewards</Text>
+    <Text style={styles.emptyStateText}>No quests yet!</Text>
+    <Text style={styles.emptyStateSubtext}>Add your first quest to start earning rewards</Text>
           </View>
         ) : (
           tasks.map(task => (
@@ -804,19 +700,74 @@ export default function App() {
           ))
         )}
       </ScrollView>
+
+      {/* Floating Action Button */}
+      <TouchableOpacity
+        style={styles.fabButton}
+        onPress={() => setShowTaskModal(true)}
+        activeOpacity={0.9}
+      >
+        <Text style={styles.fabIcon}>✨</Text>
+        <Text style={styles.fabText}>New Quest</Text>
+      </TouchableOpacity>
     </View>
   );
 
   const renderFocusScreen = () => (
-    <View style={styles.screenContainer}>
+    <View style={[styles.screenContainer, styles.lightScreen]}>
+      {/* Purple gradient-like decor */}
+      <View pointerEvents="none" style={styles.screenDecor}>
+        <View style={styles.decorationBlobOne} />
+        <View style={styles.decorationBlobTwo} />
+      </View>
       <View style={styles.screenHeader}>
-        <Text style={styles.screenTitle}>🎯 Focus Zone</Text>
-        <Text style={styles.screenSubtitle}>Deep work sessions with rewards</Text>
+        <Text style={[styles.screenTitle, styles.screenTitleDark]}>🎯 Focus Zone</Text>
+        <Text style={[styles.screenSubtitle, styles.screenSubtitleDark]}>Deep work sessions with rewards</Text>
       </View>
       
       <View style={styles.timerContainer}>
         {/* Enhanced Timer Display */}
         <View style={[styles.timerCircle, focusTimer.isRunning && styles.timerActive]}>
+          {/* Faint inner circular progress ring */}
+          <View pointerEvents="none" style={styles.innerRingContainer}>
+            <Svg width={220} height={220} style={styles.innerRingSvg}>
+              {(() => {
+                const r = 100; // radius
+                const cx = 110;
+                const cy = 110;
+                const strokeW = 8;
+                const circumference = 2 * Math.PI * r;
+                const progress = focusTimer.totalTime
+                  ? Math.max(0, Math.min(1, (focusTimer.totalTime - focusTimer.timeLeft) / focusTimer.totalTime))
+                  : 0;
+                return (
+                  <>
+                    {/* Track */}
+                    <Circle
+                      cx={cx}
+                      cy={cy}
+                      r={r}
+                      stroke="rgba(74, 20, 140, 0.08)"
+                      strokeWidth={strokeW}
+                      fill="none"
+                    />
+                    {/* Progress */}
+                    <Circle
+                      cx={cx}
+                      cy={cy}
+                      r={r}
+                      stroke={colors.accent}
+                      strokeWidth={strokeW}
+                      strokeLinecap="round"
+                      strokeDasharray={`${circumference}`}
+                      strokeDashoffset={`${(1 - progress) * circumference}`}
+                      fill="none"
+                    />
+                  </>
+                );
+              })()}
+            </Svg>
+          </View>
           <Text style={styles.timerText}>{formatTime(focusTimer.timeLeft)}</Text>
           <Text style={styles.timerSession}>Session {focusTimer.currentSession}</Text>
           {focusTimer.isRunning && (
@@ -839,7 +790,7 @@ export default function App() {
               styles.productivityFill,
               { 
                 width: `${focusTimer.productivity}%`,
-                backgroundColor: focusTimer.productivity > 80 ? '#7e60c0' : '#b388ff'
+                backgroundColor: focusTimer.productivity > 80 ? '#27ae60' : '#f39c12'
               }
             ]} />
           </View>
@@ -876,7 +827,7 @@ export default function App() {
         </View>
         
         {/* Focus Stats */}
-        <View style={styles.focusStats}>
+  <View style={styles.focusStats}>
           <View style={styles.focusStatItem}>
             <Text style={styles.focusStatNumber}>{focusTimer.sessionsToday}</Text>
             <Text style={styles.focusStatLabel}>Today</Text>
@@ -891,7 +842,7 @@ export default function App() {
           </View>
         </View>
         
-        <Text style={styles.timerReward}>
+  <Text style={styles.timerReward}>
           🎁 Reward: +25🐟 +10🌱 +50⭐ +2💎
         </Text>
       </View>
@@ -1017,8 +968,7 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#4a148c" />
-      <GradientBackground />
+  <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
       
       {/* Notifications */}
       <View style={styles.notificationContainer}>
@@ -1033,7 +983,7 @@ export default function App() {
       </View>
       
       {/* Enhanced Navigation Bar */}
-  <View style={styles.navbar}>
+      <View style={styles.navbar}>
         {[
           { key: 'home', icon: '🏠', label: 'Home' },
           { key: 'tasks', icon: '📝', label: 'Tasks', badge: tasks.filter(t => !t.completed).length },
@@ -1084,7 +1034,7 @@ export default function App() {
             <TextInput
               style={styles.taskInput}
               placeholder="What would you like to accomplish?"
-              placeholderTextColor="#b8a8ff"
+              placeholderTextColor="#95a5a6"
               value={newTaskText}
               onChangeText={setNewTaskText}
               multiline
@@ -1210,20 +1160,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent',
-  },
-  // Gradient background layers
-  gradientContainer: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    flexDirection: 'column',
-    pointerEvents: 'none',
-  },
-  gradientBand: {
-    flex: 1,
+  backgroundColor: colors.primary,
   },
   
   // Notifications
@@ -1235,7 +1172,7 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   notification: {
-    backgroundColor: 'rgba(155, 89, 182, 0.95)',
+    backgroundColor: 'rgba(46, 204, 113, 0.95)',
     padding: 12,
     borderRadius: 8,
     marginBottom: 5,
@@ -1255,7 +1192,7 @@ const styles = StyleSheet.create({
   // Enhanced Navigation
   navbar: {
     flexDirection: 'row',
-  backgroundColor: 'rgba(0,0,0,0.25)',
+  backgroundColor: colors.primaryDark,
     paddingVertical: 12,
     paddingBottom: Platform.OS === 'ios' ? 12 : 16,
     shadowColor: '#000',
@@ -1271,7 +1208,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   navItemActive: {
-  backgroundColor: 'rgba(155, 89, 182, 0.25)',
+  backgroundColor: 'rgba(106, 27, 154, 0.2)',
     borderRadius: 12,
     marginHorizontal: 4,
   },
@@ -1291,7 +1228,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -5,
     right: -8,
-  backgroundColor: '#9b59b6',
+  backgroundColor: colors.accent,
     borderRadius: 10,
     minWidth: 20,
     height: 20,
@@ -1305,13 +1242,42 @@ const styles = StyleSheet.create({
   },
   navLabel: {
     fontSize: 10,
-  color: 'rgba(255,255,255,0.8)',
+    color: '#95a5a6',
     fontWeight: '600',
   },
   navLabelActive: {
-  color: '#d0b3ff',
+  color: colors.accent,
     fontWeight: 'bold',
   },
+  // Room Home (wall/floor layout)
+  roomContainer: { flex: 1 },
+  roomWall: { flex: 2, backgroundColor: colors.wall, paddingTop: 12, paddingHorizontal: 12 },
+  roomFloor: { flex: 3, backgroundColor: colors.floor, position: 'relative', borderTopWidth: 3, borderTopColor: colors.primaryLight },
+  topProgressWrap: { alignItems: 'center', marginTop: 8, marginBottom: 8 },
+  topProgressBar: { width: '88%', height: 18, borderRadius: 9, backgroundColor: '#f3e5f5', borderWidth: 3, borderColor: colors.primary },
+  topProgressFill: { height: '100%', backgroundColor: colors.accent, borderRadius: 6 },
+  roomCurrencies: { position: 'absolute', top: 50, left: 10 },
+  roomCurrencyBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.wall, borderWidth: 3, borderColor: colors.primary, borderRadius: 12, paddingHorizontal: 10, paddingVertical: 8, marginBottom: 10, minWidth: 130 },
+  roomCurrencyIcon: { width: 28, height: 28, borderRadius: 14, backgroundColor: '#fff3e0', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors.primary, marginRight: 8 },
+  roomCurrencyTexts: { flexDirection: 'column' },
+  roomCurrencyValue: { fontSize: 18, fontWeight: '800', color: colors.primaryDark, lineHeight: 20 },
+  roomCurrencyLabel: { fontSize: 10, color: '#6a1b9a' },
+  roomWindow: { position: 'absolute', top: 80, left: 130, width: 160, height: 70, backgroundColor: '#e8f5e9', borderWidth: 3, borderColor: colors.primary, borderRadius: 6 },
+  roomBed: { position: 'absolute', right: 30, top: -20, width: 160, height: 90, backgroundColor: '#f3e5f5', borderWidth: 3, borderColor: colors.primary, borderTopLeftRadius: 16, borderTopRightRadius: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 6, elevation: 4 },
+  roomPillow: { position: 'absolute', left: 12, top: 12, width: 60, height: 36, backgroundColor: '#e1bee7', borderWidth: 3, borderColor: colors.primary, borderRadius: 8 },
+  roomBunny: { position: 'absolute', left: '40%', top: 36, width: 100, height: 120, alignItems: 'center', justifyContent: 'center' },
+  roomBunnyEmoji: { fontSize: 64 },
+  roomRightMenu: { position: 'absolute', right: 12, top: 40, alignItems: 'center', zIndex: 15 },
+  roomMenuGrid: { width: 190, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  roomMenuExtrasRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
+  roomMenuActionsRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10, width: 190 },
+  roomMenuToggle: { position: 'absolute', right: 12, top: 10, width: 46, height: 38, borderRadius: 10, backgroundColor: colors.wall, borderWidth: 3, borderColor: colors.primary, alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 3, elevation: 2, zIndex: 20 },
+  roomMenuToggleIcon: { fontSize: 18, color: colors.primary, fontWeight: '700' },
+  roomMenuOverlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'transparent', zIndex: 10 },
+  circleMenuBtn: { width: 54, height: 54, borderRadius: 27, backgroundColor: colors.wall, borderWidth: 3, borderColor: colors.primary, alignItems: 'center', justifyContent: 'center', marginVertical: 6, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 4, elevation: 3 },
+  circleMenuIcon: { fontSize: 22 },
+  ideaBtn: { backgroundColor: '#fff3e0' },
+  confirmBtn: { backgroundColor: '#e8f5e9' },
   
   // Screen Layout
   content: {
@@ -1319,7 +1285,10 @@ const styles = StyleSheet.create({
   },
   screenContainer: {
     flex: 1,
-  backgroundColor: 'transparent',
+  backgroundColor: colors.primary,
+  },
+  lightScreen: {
+    backgroundColor: '#ede7f6',
   },
   screenHeader: {
     padding: 20,
@@ -1331,12 +1300,42 @@ const styles = StyleSheet.create({
   screenTitle: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: colors.white,
+  },
+  screenTitleDark: {
+    color: '#311b92',
   },
   screenSubtitle: {
     fontSize: 14,
     color: 'rgba(255,255,255,0.8)',
     marginTop: 2,
+  },
+  // Decorative gradient-like overlays per screen (used in Tasks)
+  screenDecor: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 0,
+  },
+  decorationBlobOne: {
+    position: 'absolute',
+    top: -60,
+    left: -50,
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    backgroundColor: 'rgba(142, 36, 170, 0.25)',
+  },
+  decorationBlobTwo: {
+    position: 'absolute',
+    right: -40,
+    bottom: -40,
+    width: 260,
+    height: 260,
+    borderRadius: 130,
+    backgroundColor: 'rgba(49, 27, 146, 0.25)',
   },
   
   // Enhanced Header
@@ -1467,7 +1466,7 @@ const styles = StyleSheet.create({
   },
   expFill: {
     height: '100%',
-  backgroundColor: '#bb86fc',
+    backgroundColor: '#f39c12',
     borderRadius: 10,
   },
   expText: {
@@ -1507,7 +1506,7 @@ const styles = StyleSheet.create({
   statsTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-  color: '#2c2140',
+    color: '#2c3e50',
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -1523,7 +1522,7 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 24,
     fontWeight: 'bold',
-  color: '#d0b3ff',
+    color: '#e74c3c',
     marginBottom: 5,
   },
   statText: {
@@ -1536,13 +1535,13 @@ const styles = StyleSheet.create({
   },
   lifetimeStats: {
     borderTopWidth: 1,
-  borderTopColor: 'rgba(255,255,255,0.4)',
+    borderTopColor: '#ecf0f1',
     paddingTop: 15,
   },
   lifetimeTitle: {
     fontSize: 14,
     fontWeight: 'bold',
-  color: '#2c2140',
+    color: '#2c3e50',
     textAlign: 'center',
     marginBottom: 10,
   },
@@ -1552,7 +1551,7 @@ const styles = StyleSheet.create({
   },
   lifetimeStat: {
     fontSize: 10,
-  color: '#c9bbff',
+    color: '#7f8c8d',
     textAlign: 'center',
   },
   
@@ -1572,7 +1571,7 @@ const styles = StyleSheet.create({
   quickActionsTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-  color: '#2c2140',
+    color: '#2c3e50',
     textAlign: 'center',
     marginBottom: 15,
   },
@@ -1582,7 +1581,7 @@ const styles = StyleSheet.create({
   },
   quickActionButton: {
     alignItems: 'center',
-  backgroundColor: '#f3edff',
+    backgroundColor: '#f8f9fa',
     borderRadius: 15,
     padding: 15,
     flex: 1,
@@ -1600,7 +1599,7 @@ const styles = StyleSheet.create({
   
   // Task Management
   addButton: {
-  backgroundColor: '#7e60c0',
+  backgroundColor: colors.accent,
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 25,
@@ -1618,7 +1617,7 @@ const styles = StyleSheet.create({
   taskStats: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: 'rgba(255,255,255,0.1)',
+  backgroundColor: 'rgba(49, 27, 146, 0.08)',
     marginHorizontal: 20,
     padding: 15,
     borderRadius: 15,
@@ -1630,11 +1629,11 @@ const styles = StyleSheet.create({
   taskStatNumber: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#ffffff',
+  color: '#4a148c',
   },
   taskStatLabel: {
     fontSize: 10,
-    color: 'rgba(255,255,255,0.8)',
+  color: '#6a1b9a',
     marginTop: 2,
   },
   tasksList: {
@@ -1651,13 +1650,13 @@ const styles = StyleSheet.create({
   },
   emptyStateText: {
     fontSize: 20,
-    color: '#ffffff',
+  color: '#4a148c',
     fontWeight: 'bold',
     marginBottom: 5,
   },
   emptyStateSubtext: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.8)',
+  color: '#6a1b9a',
     textAlign: 'center',
   },
   taskItem: {
@@ -1675,7 +1674,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   taskCompleted: {
-  backgroundColor: '#f6f0ff',
+    backgroundColor: '#f8f9fa',
     opacity: 0.8,
   },
   taskContent: {
@@ -1692,17 +1691,17 @@ const styles = StyleSheet.create({
   },
   taskText: {
     fontSize: 14,
-  color: '#2c2140',
+    color: '#2c3e50',
     fontWeight: '500',
     marginBottom: 3,
   },
   taskTextCompleted: {
     textDecorationLine: 'line-through',
-  color: '#9b8ee5',
+    color: '#7f8c8d',
   },
   taskReward: {
     fontSize: 10,
-  color: '#b8a8ff',
+    color: '#7f8c8d',
   },
   taskCheckbox: {
     fontSize: 18,
@@ -1727,7 +1726,7 @@ const styles = StyleSheet.create({
     width: 240,
     height: 240,
     borderRadius: 120,
-    backgroundColor: '#ffffff',
+  backgroundColor: colors.surfaceAlt,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 30,
@@ -1736,22 +1735,36 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 16,
     elevation: 12,
-    position: 'relative',
+  position: 'relative',
+  borderWidth: 3,
+  borderColor: colors.primary,
+  },
+  innerRingContainer: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    right: 10,
+    bottom: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  innerRingSvg: {
+    transform: [{ rotate: '-90deg' }],
   },
   timerActive: {
-  backgroundColor: '#f8f9fa',
-    borderWidth: 3,
-  borderColor: '#bb86fc',
+  backgroundColor: colors.surfaceAlt,
+  borderWidth: 3,
+  borderColor: colors.accent,
   },
   timerText: {
     fontSize: 42,
     fontWeight: 'bold',
-  color: '#4a148c',
+  color: colors.primaryDark,
     marginBottom: 5,
   },
   timerSession: {
     fontSize: 14,
-  color: '#e3d7ff',
+    color: '#7f8c8d',
     fontWeight: '600',
   },
   progressRing: {
@@ -1760,13 +1773,13 @@ const styles = StyleSheet.create({
     left: -3,
     right: -3,
     height: 6,
-  backgroundColor: 'rgba(255,255,255,0.3)',
+  backgroundColor: 'rgba(49, 27, 146, 0.18)',
     borderRadius: 3,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-  backgroundColor: '#bb86fc',
+  backgroundColor: colors.accent,
   },
   productivityContainer: {
     alignItems: 'center',
@@ -1774,13 +1787,13 @@ const styles = StyleSheet.create({
   },
   productivityLabel: {
     fontSize: 14,
-  color: '#f5e9ff',
+  color: '#4a148c',
     marginBottom: 5,
   },
   productivityBar: {
     width: 200,
     height: 8,
-  backgroundColor: 'rgba(255,255,255,0.25)',
+  backgroundColor: 'rgba(49, 27, 146, 0.15)',
     borderRadius: 4,
     overflow: 'hidden',
   },
@@ -1796,7 +1809,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   timerButton: {
-  backgroundColor: '#7e60c0',
+    backgroundColor: colors.success,
     paddingHorizontal: 30,
     paddingVertical: 15,
     borderRadius: 30,
@@ -1808,13 +1821,13 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   pauseButton: {
-  backgroundColor: '#a881ff',
+    backgroundColor: colors.warning,
   },
   stopButton: {
-  backgroundColor: '#8e44ad',
+    backgroundColor: '#e67e22',
   },
   resumeButton: {
-  backgroundColor: '#6c4ab6',
+  backgroundColor: colors.accent,
     marginTop: 10,
   },
   timerButtonText: {
@@ -1830,7 +1843,7 @@ const styles = StyleSheet.create({
   focusStats: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-  backgroundColor: 'rgba(255,255,255,0.12)',
+  backgroundColor: 'rgba(49, 27, 146, 0.08)',
     padding: 15,
     borderRadius: 15,
     marginBottom: 15,
@@ -1842,16 +1855,16 @@ const styles = StyleSheet.create({
   focusStatNumber: {
     fontSize: 18,
     fontWeight: 'bold',
-  color: '#ffffff',
+  color: '#4a148c',
   },
   focusStatLabel: {
     fontSize: 10,
-  color: 'rgba(255,255,255,0.85)',
+  color: '#6a1b9a',
     marginTop: 2,
   },
   timerReward: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.9)',
+  color: '#4a148c',
     textAlign: 'center',
     fontWeight: '600',
   },
@@ -1884,14 +1897,14 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   plotReady: {
-  backgroundColor: '#e8ddff',
+    backgroundColor: '#d5f4e6',
     borderWidth: 2,
-  borderColor: '#bb86fc',
+    borderColor: '#27ae60',
   },
   plotThirsty: {
-  backgroundColor: '#f2e5ff',
+    backgroundColor: '#fdeaea',
     borderWidth: 2,
-  borderColor: '#9b59b6',
+    borderColor: '#e74c3c',
   },
   plotEmoji: {
     fontSize: 32,
@@ -1899,7 +1912,7 @@ const styles = StyleSheet.create({
   },
   plotText: {
     fontSize: 9,
-  color: '#2c2140',
+    color: '#2c3e50',
     textAlign: 'center',
     fontWeight: 'bold',
   },
@@ -1909,13 +1922,13 @@ const styles = StyleSheet.create({
     left: 5,
     right: 5,
     height: 4,
-  backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: '#ecf0f1',
     borderRadius: 2,
     overflow: 'hidden',
   },
   waterLevel: {
     height: '100%',
-  backgroundColor: '#9575cd',
+    backgroundColor: '#3498db',
   },
   fertilizerIndicator: {
     position: 'absolute',
@@ -1947,19 +1960,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 6,
-  borderWidth: 1,
-  borderColor: '#e8ddff',
   },
   gardenInfoTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-  color: '#2c2140',
+    color: '#2c3e50',
     textAlign: 'center',
     marginBottom: 15,
   },
-  plantTypes: {
-    marginBottom: 15,
-  },
+  // plantTypes style key removed to avoid shadowing plantTypes constant
   plantTypeInfo: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1978,24 +1987,24 @@ const styles = StyleSheet.create({
   plantTypeName: {
     fontSize: 14,
     fontWeight: 'bold',
-  color: '#2c2140',
+    color: '#2c3e50',
   },
   plantTypeCost: {
     fontSize: 12,
-  color: '#8f7fd8',
+    color: '#7f8c8d',
   },
   plantTypeReward: {
     fontSize: 10,
-  color: '#7e60c0',
+    color: '#27ae60',
   },
   gardenTips: {
     borderTopWidth: 1,
-  borderTopColor: 'rgba(255,255,255,0.4)',
+    borderTopColor: '#ecf0f1',
     paddingTop: 15,
   },
   gardenTip: {
     fontSize: 12,
-  color: '#d6c8ff',
+    color: '#7f8c8d',
     marginBottom: 5,
   },
   
@@ -2021,17 +2030,17 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-  color: '#2c2140',
+    color: '#2c3e50',
     textAlign: 'center',
     marginBottom: 20,
   },
   taskInput: {
     borderWidth: 2,
-  borderColor: 'rgba(255,255,255,0.4)',
+    borderColor: '#ecf0f1',
     borderRadius: 12,
     padding: 15,
     fontSize: 16,
-  color: '#2c2140',
+    color: '#2c3e50',
     minHeight: 100,
     textAlignVertical: 'top',
     marginBottom: 20,
@@ -2039,7 +2048,7 @@ const styles = StyleSheet.create({
   priorityLabel: {
     fontSize: 14,
     fontWeight: 'bold',
-  color: '#2c2140',
+    color: '#2c3e50',
     marginBottom: 10,
   },
   priorityContainer: {
@@ -2053,7 +2062,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginHorizontal: 2,
-  backgroundColor: '#f3edff',
+    backgroundColor: '#f8f9fa',
   },
   priorityEmoji: {
     fontSize: 16,
@@ -2061,14 +2070,14 @@ const styles = StyleSheet.create({
   },
   priorityText: {
     fontSize: 10,
-  color: '#2c2140',
+    color: '#2c3e50',
     fontWeight: '600',
   },
   priorityTextActive: {
     color: '#ffffff',
   },
   rewardPreview: {
-  backgroundColor: '#f3edff',
+    backgroundColor: '#f8f9fa',
     padding: 15,
     borderRadius: 10,
     marginBottom: 20,
@@ -2076,12 +2085,12 @@ const styles = StyleSheet.create({
   rewardPreviewTitle: {
     fontSize: 12,
     fontWeight: 'bold',
-  color: '#2c2140',
+    color: '#2c3e50',
     marginBottom: 5,
   },
   rewardPreviewText: {
     fontSize: 14,
-  color: '#bb86fc',
+    color: '#27ae60',
     fontWeight: 'bold',
   },
   modalButtons: {
@@ -2095,10 +2104,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   cancelButton: {
-  backgroundColor: '#8f7fd8',
+    backgroundColor: '#95a5a6',
   },
   addTaskButton: {
-  backgroundColor: '#9b59b6',
+    backgroundColor: '#e74c3c',
   },
   cancelButtonText: {
     color: '#ffffff',
@@ -2128,7 +2137,7 @@ const styles = StyleSheet.create({
   rewardModalTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-  color: '#2c2140',
+    color: '#2c3e50',
     marginBottom: 20,
   },
   rewardDisplay: {
@@ -2137,7 +2146,7 @@ const styles = StyleSheet.create({
   },
   rewardDisplayText: {
     fontSize: 18,
-  color: '#bb86fc',
+    color: '#27ae60',
     fontWeight: 'bold',
     marginBottom: 5,
   },
@@ -2147,7 +2156,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   rewardCloseButton: {
-  backgroundColor: '#9b59b6',
+    backgroundColor: '#e74c3c',
     paddingHorizontal: 30,
     paddingVertical: 15,
     borderRadius: 25,
@@ -2173,24 +2182,24 @@ const styles = StyleSheet.create({
   levelUpTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-  color: '#bb86fc',
+    color: '#e74c3c',
     marginBottom: 15,
     textAlign: 'center',
   },
   levelUpLevel: {
     fontSize: 48,
     fontWeight: 'bold',
-  color: '#e0c3fc',
+    color: '#f39c12',
     marginBottom: 15,
   },
   levelUpMessage: {
     fontSize: 16,
-  color: '#2c2140',
+    color: '#2c3e50',
     textAlign: 'center',
     marginBottom: 25,
   },
   levelUpButton: {
-  backgroundColor: '#7e60c0',
+    backgroundColor: '#27ae60',
     paddingHorizontal: 40,
     paddingVertical: 15,
     borderRadius: 30,
@@ -2199,6 +2208,35 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  
+  // Floating Action Button (Tasks)
+  fabButton: {
+    position: 'absolute',
+    right: 20,
+    bottom: 30,
+    backgroundColor: '#8e24aa',
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 28,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  fabIcon: {
+    fontSize: 16,
+    marginRight: 8,
+    color: '#fff',
+  },
+  fabText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 14,
+    letterSpacing: 0.3,
   },
 });
 
