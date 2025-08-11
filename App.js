@@ -157,8 +157,8 @@ export default function App() {
               <View style={[styles.topProgressFill, { width: `${expPct}%` }]} />
             </View>
           </View>
-          {/* Top-left currencies */}
-          <View style={styles.roomCurrencies}>
+          {/* Top-left currencies (non-blocking) */}
+          <View style={styles.roomCurrencies} pointerEvents="none">
             <View style={styles.roomCurrencyBox}>
               <View style={styles.roomCurrencyIcon}><Text>🐟</Text></View>
               <View style={styles.roomCurrencyTexts}>
@@ -970,12 +970,13 @@ export default function App() {
     <SafeAreaView style={styles.container}>
   <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
       
-      {/* Notifications */}
-      <View style={styles.notificationContainer}>
+  {/* Notifications (let touches pass through gaps) */}
+  <View style={styles.notificationContainer} pointerEvents="box-none">
         {notifications.map(notification => (
           <Animated.View 
             key={notification.id} 
             style={styles.notification}
+            pointerEvents="none"
           >
             <Text style={styles.notificationText}>{notification.message}</Text>
           </Animated.View>
@@ -1256,7 +1257,7 @@ const styles = StyleSheet.create({
   topProgressWrap: { alignItems: 'center', marginTop: 8, marginBottom: 8 },
   topProgressBar: { width: '88%', height: 18, borderRadius: 9, backgroundColor: '#f3e5f5', borderWidth: 3, borderColor: colors.primary },
   topProgressFill: { height: '100%', backgroundColor: colors.accent, borderRadius: 6 },
-  roomCurrencies: { position: 'absolute', top: 50, left: 10 },
+  roomCurrencies: { position: 'absolute', top: 50, left: 10, zIndex: 5 },
   roomCurrencyBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.wall, borderWidth: 3, borderColor: colors.primary, borderRadius: 12, paddingHorizontal: 10, paddingVertical: 8, marginBottom: 10, minWidth: 130 },
   roomCurrencyIcon: { width: 28, height: 28, borderRadius: 14, backgroundColor: '#fff3e0', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors.primary, marginRight: 8 },
   roomCurrencyTexts: { flexDirection: 'column' },
