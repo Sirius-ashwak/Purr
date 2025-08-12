@@ -185,11 +185,8 @@ export default function App() {
           <View style={styles.roomWindow} />
         </View>
 
-        {/* Floor with bed and bunny */}
+        {/* Floor with bunny */}
         <View style={styles.roomFloor}>
-          <View style={styles.roomBed}>
-            <View style={styles.roomPillow} />
-          </View>
           <TouchableOpacity activeOpacity={0.8} onPress={bounce} style={styles.roomBunny}>
             <Animated.View style={{ transform: [{ scale: catBounceAnim }] }}>
               <Text style={styles.roomBunnyEmoji}>🐰</Text>
@@ -1264,8 +1261,6 @@ const styles = StyleSheet.create({
   roomCurrencyValue: { fontSize: 18, fontWeight: '800', color: colors.primaryDark, lineHeight: 20 },
   roomCurrencyLabel: { fontSize: 10, color: '#6a1b9a' },
   roomWindow: { position: 'absolute', top: 80, left: 130, width: 160, height: 70, backgroundColor: '#e8f5e9', borderWidth: 3, borderColor: colors.primary, borderRadius: 6 },
-  roomBed: { position: 'absolute', right: 30, top: -20, width: 160, height: 90, backgroundColor: '#f3e5f5', borderWidth: 3, borderColor: colors.primary, borderTopLeftRadius: 16, borderTopRightRadius: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 6, elevation: 4 },
-  roomPillow: { position: 'absolute', left: 12, top: 12, width: 60, height: 36, backgroundColor: '#e1bee7', borderWidth: 3, borderColor: colors.primary, borderRadius: 8 },
   roomBunny: { position: 'absolute', left: '40%', top: 36, width: 100, height: 120, alignItems: 'center', justifyContent: 'center' },
   roomBunnyEmoji: { fontSize: 64 },
   roomRightMenu: { position: 'absolute', right: 12, top: 40, alignItems: 'center', zIndex: 15 },
