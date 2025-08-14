@@ -43,7 +43,7 @@ A modern, playful mobile app for task planning and scheduling, featuring an ador
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone <https://github.com/Sirius-ashwak/Purr>
 cd Purr
 ```
 
