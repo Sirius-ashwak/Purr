@@ -1,6 +1,6 @@
 {
   "expo": {
-  "platforms": ["ios", "android"],
+  "platforms": ["ios", "android", "web"],
     "name": "PurrPlan World",
     "slug": "purrplan-world",
     "version": "1.0.0",

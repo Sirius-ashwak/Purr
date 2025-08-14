@@ -13,11 +13,19 @@ import {
   Modal,
   Animated,
   Alert,
-  Vibration
+  Vibration,
+  Image
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from './src/constants/theme';
 import Svg, { Circle } from 'react-native-svg';
+import LottieView from 'lottie-react-native';
+
+// Import all JSON animations from assets
+import catAnimation from './assets/cat.json';
+import catWithPumpkinAnimation from './assets/cat-with-pumpkin.json';
+import pawPrintsAnimation from './assets/paw-prints.json';
+import switchOnAnimation from './assets/switch-on.json';
 
 // Note: Avoid using Dimensions for now to reduce layout edge cases
 
@@ -26,6 +34,7 @@ export default function App() {
   
   // Animation References
   const catBounceAnim = useRef(new Animated.Value(1)).current;
+  const bounceAnim = useRef(new Animated.Value(1)).current;
   // Start at 0 and map to scale 1 via interpolation so items are visible by default
   const coinAnim = useRef(new Animated.Value(0)).current;
   const levelUpAnim = useRef(new Animated.Value(0)).current;
@@ -90,6 +99,25 @@ export default function App() {
     pauseCount: 0,
     productivity: 100,
   });
+  
+  // Animation and Theme State
+  const [currentCatAnimation, setCurrentCatAnimation] = useState('normal');
+  const [showPawPrints, setShowPawPrints] = useState(false);
+  const [showSwitchAnimation, setShowSwitchAnimation] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [catTheme, setCatTheme] = useState('normal'); // normal, pumpkin, etc.
+  
+  // Available animations
+  const animations = {
+    cat: {
+      normal: catAnimation,
+      pumpkin: catWithPumpkinAnimation,
+    },
+    effects: {
+      pawPrints: pawPrintsAnimation,
+      switchOn: switchOnAnimation,
+    }
+  };
   
   // UI and Navigation State
   const [currentScreen, setCurrentScreen] = useState('home');
@@ -185,13 +213,45 @@ export default function App() {
           <View style={styles.roomWindow} />
         </View>
 
-        {/* Floor with bunny */}
+        {/* Floor with interactive cat */}
         <View style={styles.roomFloor}>
-          <TouchableOpacity activeOpacity={0.8} onPress={bounce} style={styles.roomBunny}>
-            <Animated.View style={{ transform: [{ scale: catBounceAnim }] }}>
-              <Text style={styles.roomBunnyEmoji}>🐰</Text>
+          <TouchableOpacity activeOpacity={0.8} onPress={handleCatInteraction} style={styles.roomCat}>
+            <Animated.View style={[styles.roomCatWrapper, { transform: [{ scale: catBounceAnim }] }]}>
+              {isLoading ? (
+                <Image
+                  source={require('./assets/icon.png')}
+                  style={styles.loadingIcon}
+                />
+              ) : (
+                <Text style={styles.catEmoji}>🐱</Text>
+              )}
+              {showPawPrints && (
+                <LottieView
+                  source={animations.effects.pawPrints}
+                  autoPlay={true}
+                  loop={false}
+                  style={styles.pawPrintsOverlay}
+                  onAnimationFinish={() => setShowPawPrints(false)}
+                />
+              )}
+              {showSwitchAnimation && (
+                <LottieView
+                  source={animations.effects.switchOn}
+                  autoPlay={true}
+                  loop={false}
+                  style={styles.switchOverlay}
+                  onAnimationFinish={() => setShowSwitchAnimation(false)}
+                />
+              )}
             </Animated.View>
           </TouchableOpacity>
+        </View>
+
+        {/* Cat status indicator */}
+        <View style={styles.catStatusIndicator}>
+          <Text style={styles.catStatusText}>
+            {catTheme === 'normal' ? '🐱 Happy Cat' : '🎃 Spooky Cat'}
+          </Text>
         </View>
 
         {/* Hamburger toggle for room menu */}
@@ -308,6 +368,46 @@ export default function App() {
   setShowRewardModal(true);
   };
   
+  // Animation Control Functions
+  const switchCatTheme = () => {
+    setCatTheme(prev => {
+      const newTheme = prev === 'normal' ? 'pumpkin' : 'normal';
+      setShowSwitchAnimation(true);
+      setTimeout(() => setShowSwitchAnimation(false), 1000);
+      
+      addNotification(newTheme === 'pumpkin' ? '🎃 Spooky cat activated!' : '😸 Normal cat restored!');
+      return newTheme;
+    });
+  };
+  
+  const triggerPawPrints = () => {
+    setShowPawPrints(true);
+    setTimeout(() => setShowPawPrints(false), 2000);
+  };
+  
+  const handleCatInteraction = () => {
+    // Bounce animation
+    Animated.sequence([
+      Animated.spring(catBounceAnim, { toValue: 1.2, useNativeDriver: true }),
+      Animated.spring(catBounceAnim, { toValue: 1, useNativeDriver: true }),
+    ]).start();
+    
+    // Trigger paw prints
+    triggerPawPrints();
+    
+    // Random interactions
+    const interactions = [
+      () => addNotification('😸 Meow! Your cat is happy!'),
+      () => addNotification('🐾 Your cat wants to play!'),
+      () => addNotification('💤 Your cat is feeling sleepy...'),
+      () => addNotification('🐟 Your cat is hungry for treats!'),
+      () => switchCatTheme(),
+    ];
+    
+    const randomInteraction = interactions[Math.floor(Math.random() * interactions.length)];
+    randomInteraction();
+  };
+  
   // Task Management
   const addTask = () => {
     if (newTaskText.trim()) {
@@ -384,6 +484,14 @@ export default function App() {
   useEffect(() => {
     const id = setTimeout(() => showWelcomeNotification(), 500);
     return () => clearTimeout(id);
+  }, []);
+
+  // Loading effect - hide loading after 2 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
   }, []);
   
   // Focus Timer System
@@ -1261,8 +1369,70 @@ const styles = StyleSheet.create({
   roomCurrencyValue: { fontSize: 18, fontWeight: '800', color: colors.primaryDark, lineHeight: 20 },
   roomCurrencyLabel: { fontSize: 10, color: '#6a1b9a' },
   roomWindow: { position: 'absolute', top: 80, left: 130, width: 160, height: 70, backgroundColor: '#e8f5e9', borderWidth: 3, borderColor: colors.primary, borderRadius: 6 },
-  roomBunny: { position: 'absolute', left: '40%', top: 36, width: 100, height: 120, alignItems: 'center', justifyContent: 'center' },
-  roomBunnyEmoji: { fontSize: 64 },
+  roomCat: { 
+    position: 'absolute', 
+    left: '35%', 
+    top: 20, 
+    width: 180, 
+    height: 180, 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  },
+  roomCatWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  catAnimation: {
+    width: 150,
+    height: 150,
+  },
+  catSvg: {
+    width: 150,
+    height: 150,
+    resizeMode: 'contain',
+  },
+  catEmoji: {
+    fontSize: 120,
+    textAlign: 'center',
+  },
+  loadingIcon: {
+    width: 120,
+    height: 120,
+    resizeMode: 'contain',
+    opacity: 0.8,
+  },
+  pawPrintsOverlay: {
+    position: 'absolute',
+    width: 160,
+    height: 160,
+    top: -15,
+    left: -15,
+  },
+  switchOverlay: {
+    position: 'absolute',
+    width: 50,
+    height: 50,
+    top: -25,
+    right: -25,
+  },
+  catStatusIndicator: {
+    position: 'absolute',
+    bottom: 200,
+    alignSelf: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#FFD700',
+  },
+  catStatusText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#333',
+  },
   roomRightMenu: { position: 'absolute', right: 12, top: 40, alignItems: 'center', zIndex: 15 },
   roomMenuGrid: { width: 190, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   roomMenuExtrasRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
@@ -1415,7 +1585,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   catMascot: {
-    borderRadius: 50,
+    borderRadius: 5000,
     width: 100,
     height: 100,
     justifyContent: 'center',
@@ -1429,7 +1599,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   catEmoji: {
-    fontSize: 50,
+    fontSize: 5000,
   },
   catAccessory: {
     position: 'absolute',
