@@ -45,7 +45,7 @@ const GameDashboard = () => {
       <TouchableOpacity style={styles.activeCatSection}>
         <View style={styles.catInfo}>
           <Text style={styles.catName}>🐱 {activeCat?.name || 'No Cat'}</Text>
-          <Text style={styles.catBreed}>{activeCat?.breed} • {activeCat?.personality}</Text>
+          <Text style={styles.catBreed}>{activeCat?.breed} {activeCat?.personality}</Text>
           <Text style={styles.catAbility}>💫 {activeCat?.abilityDescription}</Text>
         </View>
   <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />

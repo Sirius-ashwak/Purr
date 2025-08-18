@@ -4,129 +4,139 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Dimensions,
-  Platform,
+  TouchableOpacity,
+  StatusBar,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import LottieView from 'lottie-react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '../constants/theme';
 import { useGame } from '../context/GameContext';
-import Header from '../components/Header';
-import CatMascot from '../components/CatMascot';
-import FeatureCard from '../components/FeatureCard';
-import GameDashboard from '../components/GameDashboard';
-import PawPrintBackground from '../components/PawPrintBackground';
-
-const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
-  const { state, addTask, completeFocusSession } = useGame();
-
-  const features = [
-    {
-      id: 1,
-      title: 'Focus Timer',
-      icon: 'timer-outline',
-      color: '#FFE5D9',
-      count: `${state.productivity.streakCount} streak`,
-      onPress: () => {
-        // Simulate completing a focus session
-        completeFocusSession(1500, 'Work'); // 25 minutes
-      }
-    },
-    {
-      id: 2,
-      title: 'My Garden',
-      icon: 'flower-outline',
-      color: '#E8F5E8',
-      count: `${state.garden.plants.length} plants`,
-      onPress: () => {
-        console.log('Navigate to Garden');
-      }
-    },
-    {
-      id: 3,
-      title: 'Cat Collection',
-      icon: 'heart-outline',
-      color: '#E5F3FF',
-      count: `${state.cats.collection.length} cats`,
-      onPress: () => {
-        console.log('Navigate to Cat Collection');
-      }
-    },
-    {
-      id: 4,
-      title: 'Shop',
-      icon: 'storefront-outline',
-      color: '#F3E5FF',
-      count: 'New items!',
-      onPress: () => {
-        console.log('Navigate to Shop');
-      }
-    },
-  ];
+  const { state, completeFocusSession } = useGame();
 
   return (
     <View style={styles.container}>
-      <PawPrintBackground />
-      <Header />
-      
-      <ScrollView 
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+      <StatusBar barStyle="light-content" />
+      <LinearGradient
+        colors={['#8B5CF6', '#A855F7', '#9333EA']}
+        style={styles.gradient}
       >
-        <View style={styles.welcomeSection}>
-          <Text style={styles.welcomeText}>Welcome back, Planner!</Text>
-          <Text style={styles.subText}>Your garden is waiting for you! 🌸</Text>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.greeting}>Hello! 👋</Text>
+          <Text style={styles.welcomeText}>Welcome back</Text>
         </View>
 
-        <GameDashboard />
-
-        <View style={styles.mascotSection}>
-          <Text style={styles.sectionTitle}>Your Companion</Text>
-          <CatMascot />
-        </View>
-
-        <View style={styles.cardsSection}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.cardsContainer}>
-            {features.map((feature) => (
-              <FeatureCard
-                key={feature.id}
-                title={feature.title}
-                icon={feature.icon}
-                color={feature.color}
-                count={feature.count}
-                onPress={feature.onPress}
-              />
-            ))}
-          </View>
-        </View>
-
-        <View style={styles.aiSection}>
-          <Text style={styles.sectionTitle}>AI Assistant</Text>
-          <View style={styles.aiCard}>
-            <View style={styles.aiContent}>
-              <Ionicons name="sparkles" size={24} color="#9B59B6" />
-              <View style={styles.aiText}>
-                <Text style={styles.aiTitle}>Smart Planning Active</Text>
-                <Text style={styles.aiDescription}>
-                  I'm analyzing your productivity patterns to suggest the perfect schedule for today!
-                </Text>
-              </View>
+        <ScrollView 
+          style={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {/* Stats */}
+          <View style={styles.statsContainer}>
+            <View style={styles.statCard}>
+              <Ionicons name="fish" size={24} color="#4ECDC4" />
+              <Text style={styles.statNumber}>{state.user.fishTreats}</Text>
+              <Text style={styles.statLabel}>Fish Treats</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Ionicons name="leaf" size={24} color="#6EE7B7" />
+              <Text style={styles.statNumber}>{state.user.seeds}</Text>
+              <Text style={styles.statLabel}>Seeds</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Ionicons name="trophy" size={24} color="#F59E0B" />
+              <Text style={styles.statNumber}>{state.user.level}</Text>
+              <Text style={styles.statLabel}>Level</Text>
             </View>
           </View>
-        </View>
 
-        <View style={styles.motivationSection}>
-          <View style={styles.motivationCard}>
-            <Text style={styles.motivationText}>
-              "Every focus session waters your garden. Every completed task feeds your cats. 
-              Your productivity creates a beautiful world!" 🌟
+          {/* Cat Animation */}
+          <View style={styles.mascotSection}>
+            <Text style={styles.sectionTitle}>Your Cat Companion 🐱</Text>
+            <View style={styles.mascotContainer}>
+              <LottieView
+                source={require('../../assets/cat.json')}
+                autoPlay
+                loop
+                style={styles.mascotAnimation}
+                resizeMode="contain"
+              />
+            </View>
+            <Text style={styles.mascotDescription}>
+              Your adorable cat is here to help with your productivity! �
             </Text>
           </View>
-        </View>
-      </ScrollView>
+
+          {/* Quick Actions */}
+          <View style={styles.actionsSection}>
+            <Text style={styles.sectionTitle}>Quick Actions</Text>
+            
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={() => completeFocusSession(1500, 'Work')}
+            >
+              <LinearGradient colors={['#FF6B6B', '#FF8E8E']} style={styles.actionGradient}>
+                <Ionicons name="timer-outline" size={28} color="white" />
+                <Text style={styles.actionTitle}>Focus Timer</Text>
+                <Text style={styles.actionCount}>{state.productivity.streakCount} streak</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionCard}>
+              <LinearGradient colors={['#4ECDC4', '#6EE7B7']} style={styles.actionGradient}>
+                <Ionicons name="leaf-outline" size={28} color="white" />
+                <Text style={styles.actionTitle}>My Garden</Text>
+                <Text style={styles.actionCount}>{state.garden.plants.length} plants</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionCard}>
+              <LinearGradient colors={['#A78BFA', '#C084FC']} style={styles.actionGradient}>
+                <Ionicons name="heart-outline" size={28} color="white" />
+                <Text style={styles.actionTitle}>Cat Collection</Text>
+                <Text style={styles.actionCount}>{state.cats.collection.length} cats</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionCard}>
+              <LinearGradient colors={['#F59E0B', '#FBBF24']} style={styles.actionGradient}>
+                <Ionicons name="storefront-outline" size={28} color="white" />
+                <Text style={styles.actionTitle}>Shop</Text>
+                <Text style={styles.actionCount}>New items!</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+
+          {/* Progress */}
+          <View style={styles.progressSection}>
+            <Text style={styles.sectionTitle}>Today's Progress</Text>
+            <View style={styles.progressCard}>
+              <Text style={styles.progressTitle}>Focus Sessions: {state.productivity.focusSessions.length}/8</Text>
+              <View style={styles.progressBarContainer}>
+                <View style={styles.progressBarBg}>
+                  <View 
+                    style={[
+                      styles.progressBarFill, 
+                      { width: `${Math.min(100, (state.productivity.focusSessions.length / 8) * 100)}%` }
+                    ]} 
+                  />
+                </View>
+              </View>
+              <Text style={styles.progressText}>Keep going! You're doing great! 🌟</Text>
+            </View>
+          </View>
+
+          {/* Motivation */}
+          <View style={styles.motivationCard}>
+            <Ionicons name="sparkles" size={24} color="#F59E0B" />
+            <Text style={styles.motivationText}>
+              "Every focus session makes your cat happier! 🐱✨"
+            </Text>
+          </View>
+        </ScrollView>
+      </LinearGradient>
     </View>
   );
 };
@@ -134,93 +144,167 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  backgroundColor: colors.background,
   },
-  content: {
+  gradient: {
+    flex: 1,
+  },
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 20,
+  },
+  greeting: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.8)',
+    marginBottom: 4,
+  },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  scrollContainer: {
     flex: 1,
   },
   scrollContent: {
     paddingBottom: 30,
   },
-  welcomeSection: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 20,
-  },
-  welcomeText: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: colors.white,
-    marginBottom: 5,
-  },
-  subText: {
-    fontSize: 16,
-    color: 'rgba(255,255,255,0.85)',
-    fontWeight: '400',
-  },
-  mascotSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: colors.white,
-    marginBottom: 15,
-  },
-  cardsSection: {
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
     marginBottom: 30,
   },
-  cardsContainer: {
-    gap: 15,
-  },
-  aiSection: {
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  aiCard: {
-    backgroundColor: '#F8F7FF',
-    borderRadius: 20,
-    padding: 20,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.accent,
-  },
-  aiContent: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  aiText: {
+  statCard: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
     flex: 1,
-    marginLeft: 15,
+    marginHorizontal: 4,
   },
-  aiTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: 5,
+  statNumber: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+    marginTop: 8,
+    marginBottom: 4,
   },
-  aiDescription: {
+  statLabel: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.8)',
+    textAlign: 'center',
+  },
+  mascotSection: {
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 30,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  mascotContainer: {
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 16,
+    width: 250,
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mascotAnimation: {
+    width: 180,
+    height: 160,
+  },
+  mascotDescription: {
     fontSize: 14,
-    color: colors.textSecondary,
+    color: 'rgba(255,255,255,0.8)',
+    textAlign: 'center',
     lineHeight: 20,
   },
-  motivationSection: {
+  actionsSection: {
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 30,
   },
-  motivationCard: {
-    backgroundColor: 'rgba(233, 196, 106, 0.2)',
+  actionCard: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginBottom: 16,
+  },
+  actionGradient: {
+    padding: 20,
+    alignItems: 'center',
+    minHeight: 100,
+    justifyContent: 'center',
+  },
+  actionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  actionCount: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.9)',
+    textAlign: 'center',
+  },
+  progressSection: {
+    paddingHorizontal: 20,
+    marginBottom: 30,
+  },
+  progressCard: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
     borderRadius: 20,
     padding: 20,
+  },
+  progressTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 16,
+  },
+  progressBarContainer: {
+    marginBottom: 12,
+  },
+  progressBarBg: {
+    height: 8,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    backgroundColor: '#4ECDC4',
+    borderRadius: 4,
+  },
+  progressText: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.8)',
+    textAlign: 'center',
+  },
+  motivationCard: {
+    backgroundColor: 'rgba(245, 158, 11, 0.2)',
+    borderRadius: 20,
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 20,
     borderWidth: 1,
-    borderColor: 'rgba(233, 196, 106, 0.3)',
+    borderColor: 'rgba(245, 158, 11, 0.3)',
   },
   motivationText: {
     fontSize: 14,
-    color: colors.textPrimary,
-    textAlign: 'center',
-    lineHeight: 22,
+    color: 'white',
+    flex: 1,
+    marginLeft: 16,
+    lineHeight: 20,
     fontStyle: 'italic',
   },
 });
