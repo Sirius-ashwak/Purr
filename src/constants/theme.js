@@ -1,42 +1,40 @@
-// Color palette for PurrPlan World app (Purple theme)
+// Purple gradient theme inspired by Study Bunny
 export const colors = {
-  // Brand
-  primary: '#4a148c', // Deep purple
-  primaryDark: '#311b92', // Indigo-ish dark purple
-  primaryLight: '#5e35b1',
-  accent: '#8e24aa', // Vivid purple accent
-
+  // Primary purple gradient
+  gradientStart: '#8B5CF6', // Purple-500
+  gradientMiddle: '#A855F7', // Purple-400
+  gradientEnd: '#C084FC', // Purple-300
+  
+  // Brand colors
+  primary: '#8B5CF6',
+  primaryDark: '#7C3AED',
+  primaryLight: '#A855F7',
+  accent: '#F59E0B', // Warm yellow accent
+  
   // Surfaces
-  background: '#4a148c',
+  background: '#F8FAFC', // Very light gray
   surface: '#FFFFFF',
-  surfaceAlt: '#f3e5f5',
-  wall: '#ede7f6', // Room wall
-  floor: '#d1c4e9', // Room floor
-
+  surfaceSecondary: '#F1F5F9',
+  cardBackground: 'rgba(255, 255, 255, 0.95)',
+  
   // Text
-  textPrimary: '#2c3e50',
-  textSecondary: '#7f8c8d',
+  textPrimary: '#1E293B',
+  textSecondary: '#64748B',
   textOnPrimary: '#FFFFFF',
-
-  // Semantic
-  success: '#27ae60',
-  warning: '#f39c12',
-  danger: '#e74c3c',
-
-  // Decorative
+  textMuted: '#94A3B8',
+  
+  // Semantic colors
+  success: '#10B981',
+  warning: '#F59E0B',
+  danger: '#EF4444',
+  info: '#3B82F6',
+  
+  // Special
   white: '#FFFFFF',
-  outline: '#4a148c',
-
-  // Shadows
-  shadowLight: 'rgba(0, 0, 0, 0.1)',
-  shadowMedium: 'rgba(0, 0, 0, 0.15)',
-
-  // Gradients
-  gradientStart: '#ede7f6',
-  gradientEnd: '#d1c4e9',
+  shadow: 'rgba(0, 0, 0, 0.1)',
+  overlay: 'rgba(0, 0, 0, 0.5)',
 };
 
-// Common styling constants
 export const spacing = {
   xs: 4,
   sm: 8,
@@ -45,6 +43,7 @@ export const spacing = {
   xl: 20,
   xxl: 24,
   xxxl: 32,
+  huge: 48,
 };
 
 export const borderRadius = {
@@ -52,6 +51,7 @@ export const borderRadius = {
   md: 12,
   lg: 16,
   xl: 20,
+  xxl: 24,
   round: 50,
 };
 
@@ -64,4 +64,28 @@ export const fontSize = {
   xxl: 24,
   xxxl: 28,
   hero: 32,
+};
+
+export const shadows = {
+  small: {
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  medium: {
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  large: {
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 8,
+  },
 };
