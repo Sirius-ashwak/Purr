@@ -1,37 +1,42 @@
 // Study Bunny inspired theme
 export const colors = {
-  // Primary colors - soft pastels
-  primary: '#8B5CF6', // Purple
-  primaryLight: '#A78BFA',
-  primaryDark: '#7C3AED',
+  // Primary colors - warm and cozy
+  primary: '#8B7355', // Warm brown
+  primaryLight: '#A68B5B',
+  primaryDark: '#6B5B47',
   
-  // Background colors
-  background: '#F8FAFC', // Very light gray-blue
+  // Background colors - warm beige/cream
+  background: '#F5E6D3', // Warm cream background
   surface: '#FFFFFF',
-  surfaceSecondary: '#F1F5F9',
+  surfaceSecondary: '#F0E6D6',
   
-  // Accent colors - soft and friendly
-  accent: '#F59E0B', // Warm yellow
-  accentLight: '#FCD34D',
-  success: '#10B981', // Mint green
-  warning: '#F59E0B',
-  danger: '#EF4444',
+  // Accent colors
+  accent: '#E67E22', // Orange
+  accentLight: '#F39C12',
+  success: '#7FB069', // Soft green
+  warning: '#F39C12',
+  danger: '#E74C3C',
   
   // Text colors
-  textPrimary: '#1E293B',
-  textSecondary: '#64748B',
-  textMuted: '#94A3B8',
+  textPrimary: '#2C3E50',
+  textSecondary: '#5D4E37',
+  textMuted: '#8B7355',
   textOnPrimary: '#FFFFFF',
   
-  // Card colors - soft pastels
-  cardPink: '#FDF2F8',
-  cardBlue: '#EFF6FF',
-  cardGreen: '#F0FDF4',
-  cardYellow: '#FFFBEB',
-  cardPurple: '#FAF5FF',
+  // UI element colors
+  progressGreen: '#7FB069',
+  progressBackground: '#E8E8E8',
+  currencyBackground: '#E8E8E8',
+  buttonBackground: '#FFFFFF',
+  
+  // Room colors
+  roomWall: '#D4C4A8',
+  roomFloor: '#C8B99C',
+  roomAccent: '#A68B5B',
   
   // Special colors
   white: '#FFFFFF',
+  black: '#2C3E50',
   shadow: 'rgba(0, 0, 0, 0.1)',
   overlay: 'rgba(0, 0, 0, 0.5)',
 };
