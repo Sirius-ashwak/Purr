@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
+  Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { colors, spacing, borderRadius, fontSize, shadows } from '../constants/theme';
 import { useGame } from '../context/GameContext';
 
@@ -23,6 +23,7 @@ const TimerScreen = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [subject, setSubject] = useState('General Study');
   const intervalRef = useRef(null);
+  const pulseAnim = useRef(new Animated.Value(1)).current;
 
   const timeOptions = [15, 25, 45, 60];
   const subjects = ['General Study', 'Math', 'Science', 'Language', 'History', 'Art'];
@@ -38,8 +39,31 @@ const TimerScreen = () => {
           return prev - 1;
         });
       }, 1000);
+
+      // Pulse animation when running
+      const pulseLoop = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.05,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+      pulseLoop.start();
+
+      return () => {
+        pulseLoop.stop();
+        clearInterval(intervalRef.current);
+      };
     } else {
       clearInterval(intervalRef.current);
+      pulseAnim.setValue(1);
     }
 
     return () => clearInterval(intervalRef.current);
@@ -50,9 +74,9 @@ const TimerScreen = () => {
     setIsPaused(false);
     completeFocusSession(selectedTime * 60, subject);
     Alert.alert(
-      '🎉 Great Job!',
-      `You completed a ${selectedTime}-minute focus session! You earned Fish Treats and Seeds.`,
-      [{ text: 'Awesome!', onPress: resetTimer }]
+      '🎉 Fantastic Work!',
+      `You completed a ${selectedTime}-minute focus session on ${subject}! You earned Fish Treats and Seeds.`,
+      [{ text: 'Amazing!', onPress: resetTimer }]
     );
   };
 
@@ -93,6 +117,12 @@ const TimerScreen = () => {
     return ((totalSeconds - timeLeft) / totalSeconds) * 100;
   };
 
+  const getTimerColor = () => {
+    if (isRunning && !isPaused) return colors.success;
+    if (isPaused) return colors.warning;
+    return colors.primary;
+  };
+
   const TimeButton = ({ minutes, isSelected, onPress }) => (
     <TouchableOpacity
       style={[
@@ -102,12 +132,19 @@ const TimerScreen = () => {
       ]}
       onPress={() => onPress(minutes)}
       disabled={isRunning}
+      activeOpacity={0.7}
     >
       <Text style={[
         styles.timeButtonText,
         isSelected && styles.timeButtonTextSelected,
       ]}>
-        {minutes}m
+        {minutes}
+      </Text>
+      <Text style={[
+        styles.timeButtonLabel,
+        isSelected && styles.timeButtonLabelSelected,
+      ]}>
+        min
       </Text>
     </TouchableOpacity>
   );
@@ -120,6 +157,7 @@ const TimerScreen = () => {
       ]}
       onPress={() => onPress(subjectName)}
       disabled={isRunning}
+      activeOpacity={0.7}
     >
       <Text style={[
         styles.subjectButtonText,
@@ -131,119 +169,121 @@ const TimerScreen = () => {
   );
 
   return (
-    <LinearGradient
-      colors={[colors.gradientStart, colors.gradientEnd]}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Focus Timer</Text>
-        <Text style={styles.subtitle}>Stay focused and earn rewards!</Text>
-      </View>
-
-      {/* Timer Circle */}
-      <View style={styles.timerContainer}>
-        <View style={styles.timerCircle}>
-          <View style={styles.progressRing}>
-            <View 
-              style={[
-                styles.progressFill,
-                { 
-                  transform: [{ rotate: `${(getProgress() * 3.6)}deg` }],
-                  opacity: isRunning ? 1 : 0.3,
-                }
-              ]} 
-            />
-          </View>
-          <View style={styles.timerContent}>
-            <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>
-            <Text style={styles.timerLabel}>
-              {isRunning ? (isPaused ? 'Paused' : 'Focusing') : 'Ready'}
-            </Text>
-          </View>
+        <View style={styles.header}>
+          <Text style={styles.title}>Focus Timer</Text>
+          <Text style={styles.subtitle}>Stay focused, earn rewards! 🎯</Text>
         </View>
-      </View>
 
-      {/* Time Selection */}
-      {!isRunning && (
-        <View style={styles.timeSelection}>
-          <Text style={styles.sectionTitle}>Select Duration</Text>
-          <View style={styles.timeButtons}>
-            {timeOptions.map((time) => (
-              <TimeButton
-                key={time}
-                minutes={time}
-                isSelected={selectedTime === time}
-                onPress={selectTime}
+        {/* Timer Circle */}
+        <View style={styles.timerContainer}>
+          <Animated.View style={[
+            styles.timerCircle,
+            { 
+              transform: [{ scale: pulseAnim }],
+              borderColor: getTimerColor(),
+            }
+          ]}>
+            <View style={styles.progressRing}>
+              <View 
+                style={[
+                  styles.progressFill,
+                  { 
+                    transform: [{ rotate: `${(getProgress() * 3.6)}deg` }],
+                    borderTopColor: getTimerColor(),
+                    borderRightColor: getTimerColor(),
+                  }
+                ]} 
+              />
+            </View>
+            <View style={styles.timerContent}>
+              <Text style={[styles.timerText, { color: getTimerColor() }]}>
+                {formatTime(timeLeft)}
+              </Text>
+              <Text style={styles.timerLabel}>
+                {isRunning ? (isPaused ? '⏸️ Paused' : '🔥 Focusing') : '⏰ Ready'}
+              </Text>
+              <Text style={styles.timerSubject}>{subject}</Text>
+            </View>
+          </Animated.View>
+        </View>
+
+        {/* Time Selection */}
+        {!isRunning && (
+          <View style={styles.timeSelection}>
+            <Text style={styles.sectionTitle}>Duration</Text>
+            <View style={styles.timeButtons}>
+              {timeOptions.map((time) => (
+                <TimeButton
+                  key={time}
+                  minutes={time}
+                  isSelected={selectedTime === time}
+                  onPress={selectTime}
+                />
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* Subject Selection */}
+        <View style={styles.subjectSelection}>
+          <Text style={styles.sectionTitle}>Subject</Text>
+          <View style={styles.subjectButtons}>
+            {subjects.map((subjectName) => (
+              <SubjectButton
+                key={subjectName}
+                subjectName={subjectName}
+                isSelected={subject === subjectName}
+                onPress={setSubject}
               />
             ))}
           </View>
         </View>
-      )}
 
-      {/* Subject Selection */}
-      <View style={styles.subjectSelection}>
-        <Text style={styles.sectionTitle}>Subject</Text>
-        <View style={styles.subjectButtons}>
-          {subjects.map((subjectName) => (
-            <SubjectButton
-              key={subjectName}
-              subjectName={subjectName}
-              isSelected={subject === subjectName}
-              onPress={setSubject}
-            />
-          ))}
-        </View>
-      </View>
-
-      {/* Control Buttons */}
-      <View style={styles.controlButtons}>
-        {!isRunning ? (
-          <TouchableOpacity 
-            style={styles.startButton} 
-            onPress={startTimer}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="play" size={24} color={colors.white} />
-            <Text style={styles.startButtonText}>Start Focus</Text>
-          </TouchableOpacity>
-        ) : (
-          <View style={styles.runningControls}>
-            <TouchableOpacity
-              style={styles.controlButton}
-              onPress={isPaused ? resumeTimer : pauseTimer}
+        {/* Control Buttons */}
+        <View style={styles.controlButtons}>
+          {!isRunning ? (
+            <TouchableOpacity 
+              style={styles.startButton} 
+              onPress={startTimer}
+              activeOpacity={0.8}
             >
-              <Ionicons 
-                name={isPaused ? "play" : "pause"} 
-                size={24} 
-                color={colors.white} 
-              />
+              <Ionicons name="play" size={28} color={colors.white} />
+              <Text style={styles.startButtonText}>Start Focus Session</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.resetButton} onPress={resetTimer}>
-              <Ionicons name="stop" size={24} color={colors.white} />
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-
-      {/* Tips */}
-      <View style={styles.tipsCard}>
-        <Text style={styles.tipsTitle}>💡 Focus Tips</Text>
-        <Text style={styles.tipsText}>
-          • Put your phone in silent mode{'\n'}
-          • Find a quiet, comfortable space{'\n'}
-          • Take breaks between sessions{'\n'}
-          • Stay hydrated!
-        </Text>
-      </View>
+          ) : (
+            <View style={styles.runningControls}>
+              <TouchableOpacity
+                style={[styles.controlButton, { backgroundColor: isPaused ? colors.success : colors.warning }]}
+                onPress={isPaused ? resumeTimer : pauseTimer}
+                activeOpacity={0.8}
+              >
+                <Ionicons 
+                  name={isPaused ? "play" : "pause"} 
+                  size={28} 
+                  color={colors.white} 
+                />
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.controlButton, { backgroundColor: colors.danger }]} 
+                onPress={resetTimer}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="stop" size={28} color={colors.white} />
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.background,
   },
   safeArea: {
     flex: 1,
@@ -269,45 +309,48 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   timerCircle: {
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    backgroundColor: colors.white,
+    width: 280,
+    height: 280,
+    borderRadius: 140,
+    backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
+    borderWidth: 6,
     ...shadows.large,
   },
   progressRing: {
     position: 'absolute',
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    borderWidth: 8,
-    borderColor: colors.progressBackground,
+    width: 280,
+    height: 280,
+    borderRadius: 140,
   },
   progressFill: {
     position: 'absolute',
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    borderWidth: 8,
-    borderColor: colors.accent,
-    borderRightColor: 'transparent',
-    borderBottomColor: 'transparent',
+    width: 280,
+    height: 280,
+    borderRadius: 140,
+    borderWidth: 6,
+    borderColor: 'transparent',
+    borderTopColor: colors.primary,
+    borderRightColor: colors.primary,
   },
   timerContent: {
     alignItems: 'center',
   },
   timerText: {
-    fontSize: 48,
+    fontSize: 52,
     fontWeight: '700',
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
+    marginBottom: spacing.sm,
   },
   timerLabel: {
-    fontSize: fontSize.md,
+    fontSize: fontSize.lg,
     color: colors.textSecondary,
+    marginBottom: spacing.xs,
+  },
+  timerSubject: {
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
   },
   timeSelection: {
     paddingHorizontal: spacing.xl,
@@ -322,30 +365,36 @@ const styles = StyleSheet.create({
   },
   timeButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
   },
   timeButton: {
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    borderRadius: borderRadius.md,
-    backgroundColor: colors.white,
-    borderWidth: 2,
-    borderColor: colors.progressBackground,
+    width: (width - spacing.xl * 2 - spacing.md * 3) / 4,
+    paddingVertical: spacing.lg,
+    borderRadius: borderRadius.lg,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
     ...shadows.small,
   },
   timeButtonSelected: {
-    backgroundColor: colors.accent,
-    borderColor: colors.accent,
+    backgroundColor: colors.primary,
   },
   timeButtonDisabled: {
     opacity: 0.5,
   },
   timeButtonText: {
-    fontSize: fontSize.md,
-    fontWeight: '600',
+    fontSize: fontSize.xl,
+    fontWeight: '700',
     color: colors.textPrimary,
   },
   timeButtonTextSelected: {
+    color: colors.white,
+  },
+  timeButtonLabel: {
+    fontSize: fontSize.sm,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  timeButtonLabelSelected: {
     color: colors.white,
   },
   subjectSelection: {
@@ -361,17 +410,16 @@ const styles = StyleSheet.create({
   subjectButton: {
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
-    borderRadius: borderRadius.sm,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.progressBackground,
+    borderRadius: borderRadius.lg,
+    backgroundColor: colors.surface,
+    ...shadows.small,
   },
   subjectButtonSelected: {
-    backgroundColor: colors.primaryLight,
-    borderColor: colors.primary,
+    backgroundColor: colors.accent,
   },
   subjectButtonText: {
     fontSize: fontSize.sm,
+    fontWeight: '500',
     color: colors.textPrimary,
   },
   subjectButtonTextSelected: {
@@ -379,14 +427,16 @@ const styles = StyleSheet.create({
   },
   controlButtons: {
     paddingHorizontal: spacing.xl,
-    marginBottom: spacing.xl,
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingBottom: spacing.xl,
   },
   startButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.accent,
-    borderRadius: borderRadius.lg,
+    backgroundColor: colors.primary,
+    borderRadius: borderRadius.xl,
     paddingVertical: spacing.lg,
     ...shadows.medium,
   },
@@ -399,43 +449,15 @@ const styles = StyleSheet.create({
   runningControls: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: spacing.lg,
+    gap: spacing.xl,
   },
   controlButton: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: colors.primary,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     justifyContent: 'center',
     alignItems: 'center',
     ...shadows.medium,
-  },
-  resetButton: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: colors.danger,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...shadows.medium,
-  },
-  tipsCard: {
-    backgroundColor: colors.white,
-    borderRadius: borderRadius.lg,
-    padding: spacing.lg,
-    marginHorizontal: spacing.xl,
-    ...shadows.small,
-  },
-  tipsTitle: {
-    fontSize: fontSize.md,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-  tipsText: {
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-    lineHeight: 20,
   },
 });
 

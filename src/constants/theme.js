@@ -1,48 +1,46 @@
-// Study Bunny inspired theme
+// Modern, fresh theme with vibrant colors
 export const colors = {
-  // Primary colors - warm and cozy
-  primary: '#B794F6', // Light purple
-  primaryLight: '#E9D8FD', // Very light purple
-  primaryDark: '#9F7AEA',
+  // Primary colors - Fresh and modern
+  primary: '#6366F1', // Indigo
+  primaryLight: '#A5B4FC',
+  primaryDark: '#4F46E5',
   
-  // Background colors - warm beige/cream
-  background: '#F7FAFC', // Very light background
+  // Background colors - Clean and bright
+  background: '#FAFAFA', // Very light gray
   surface: '#FFFFFF',
-  surfaceSecondary: '#EDF2F7',
+  surfaceSecondary: '#F8FAFC',
   
-  // Accent colors
-  accent: '#9F7AEA', // Purple accent
-  accentLight: '#B794F6',
-  success: '#68D391', // Soft green
-  warning: '#F6E05E',
-  danger: '#FC8181',
+  // Accent colors - Vibrant and energetic
+  accent: '#EC4899', // Pink
+  accentLight: '#F472B6',
+  success: '#10B981', // Emerald
+  warning: '#F59E0B', // Amber
+  danger: '#EF4444', // Red
   
-  // Text colors
-  textPrimary: '#2D3748',
-  textSecondary: '#4A5568',
-  textMuted: '#718096',
+  // Text colors - High contrast
+  textPrimary: '#1F2937', // Dark gray
+  textSecondary: '#6B7280', // Medium gray
+  textMuted: '#9CA3AF', // Light gray
   textOnPrimary: '#FFFFFF',
   
-  // UI element colors
-  progressGreen: '#68D391',
-  progressBackground: '#E8E8E8',
-  currencyBackground: '#EDF2F7',
-  buttonBackground: '#FFFFFF',
-  
-  // Room colors
-  roomWall: '#D4C4A8',
-  roomFloor: '#C8B99C',
-  roomAccent: '#A68B5B',
-  
   // Special colors
-  white: '#FFFFFF',
-  black: '#1A202C',
-  shadow: 'rgba(0, 0, 0, 0.1)',
-  overlay: 'rgba(0, 0, 0, 0.5)',
+  progressGreen: '#10B981',
+  progressBackground: '#E5E7EB',
   
-  // Gradient colors
-  gradientStart: '#E9D8FD',
-  gradientEnd: '#B794F6',
+  // Gradient colors - Fresh and modern
+  gradientStart: '#667EEA', // Blue
+  gradientEnd: '#764BA2', // Purple
+  
+  // Card colors
+  cardPink: '#FDF2F8',
+  cardBlue: '#EFF6FF',
+  cardGreen: '#ECFDF5',
+  cardYellow: '#FFFBEB',
+  cardPurple: '#F3E8FF',
+  
+  white: '#FFFFFF',
+  black: '#111827',
+  shadow: 'rgba(0, 0, 0, 0.1)',
 };
 
 export const spacing = {

@@ -11,7 +11,6 @@ import {
   Modal,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { colors, spacing, borderRadius, fontSize, shadows } from '../constants/theme';
 import { useGame } from '../context/GameContext';
 
@@ -116,10 +115,7 @@ const TodoScreen = () => {
   const pendingTasks = state.productivity.todaysTasks.filter(task => !task.completed);
 
   return (
-    <LinearGradient
-      colors={[colors.gradientStart, colors.gradientEnd]}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
@@ -278,13 +274,14 @@ const TodoScreen = () => {
         </SafeAreaView>
       </Modal>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.background,
   },
   safeArea: {
     flex: 1,
@@ -423,7 +420,7 @@ const styles = StyleSheet.create({
   },
   priorityText: {
     fontSize: fontSize.xs,
-    color: colors.white,
+    color: colors.textSecondary,
     fontWeight: '600',
   },
   emptyState: {
@@ -517,7 +514,7 @@ const styles = StyleSheet.create({
     marginLeft: spacing.xs,
   },
   optionTextSelected: {
-    color: colors.white,
+    color: colors.textSecondary,
   },
   priorityOptions: {
     flexDirection: 'row',

@@ -7,11 +7,9 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
-  ImageBackground,
-  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
+import { SvgUri } from 'react-native-svg';
 import { colors, spacing, borderRadius, fontSize, shadows } from '../constants/theme';
 import { useGame } from '../context/GameContext';
 
@@ -20,23 +18,9 @@ const { width } = Dimensions.get('window');
 const HomeScreen = () => {
   const { state } = useGame();
 
-  const QuickActionCard = ({ title, icon, color, onPress, count }) => (
-    <TouchableOpacity style={[styles.actionCard, { backgroundColor: color }]} onPress={onPress}>
-      <View style={styles.actionCardContent}>
-        <View style={styles.actionIconContainer}>
-          <Ionicons name={icon} size={24} color={colors.white} />
-        </View>
-        <Text style={styles.actionTitle}>{title}</Text>
-        {count !== undefined && (
-          <Text style={styles.actionCount}>{count}</Text>
-        )}
-      </View>
-    </TouchableOpacity>
-  );
-
-  const StatsCard = ({ label, value, icon, color }) => (
-    <View style={styles.statsCard}>
-      <View style={[styles.statsIcon, { backgroundColor: color }]}>
+  const StatsCard = ({ label, value, icon, color, bgColor }) => (
+    <View style={[styles.statsCard, { backgroundColor: bgColor }]}>
+      <View style={[styles.statsIconContainer, { backgroundColor: color }]}>
         <Ionicons name={icon} size={20} color={colors.white} />
       </View>
       <Text style={styles.statsValue}>{value}</Text>
@@ -45,141 +29,109 @@ const HomeScreen = () => {
   );
 
   return (
-    <LinearGradient
-      colors={[colors.gradientStart, colors.gradientEnd]}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.greeting}>Good morning!</Text>
-            <Text style={styles.subtitle}>Ready to focus today?</Text>
+          {/* Header */}
+          <View style={styles.header}>
+            <View>
+              <Text style={styles.greeting}>Hello there! 👋</Text>
+              <Text style={styles.subtitle}>Ready to focus and learn?</Text>
+            </View>
+            <TouchableOpacity style={styles.profileButton}>
+              <Ionicons name="person-circle" size={32} color={colors.primary} />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.profileButton}>
-            <Ionicons name="person-circle-outline" size={32} color={colors.primary} />
-          </TouchableOpacity>
-        </View>
 
-        {/* Cat Mascot with Pumpkin */}
-        <View style={styles.mascotContainer}>
-          <View style={styles.catImageContainer}>
-            <Text style={styles.catPlaceholder}>🐱🎃</Text>
+          {/* Cat Mascot */}
+          <View style={styles.mascotContainer}>
+            <View style={styles.catContainer}>
+              <SvgUri
+                uri="./assets/cat.svg"
+                width={180}
+                height={180}
+                style={styles.catImage}
+              />
+            </View>
+            <Text style={styles.mascotName}>Study Buddy</Text>
+            <Text style={styles.mascotStatus}>Let's learn together! 📚</Text>
           </View>
-          <Text style={styles.mascotName}>Whiskers</Text>
-          <Text style={styles.mascotStatus}>Ready to study! 🎃</Text>
-        </View>
 
-        {/* Alternative: Try to load the actual image */}
-        {/* Uncomment this section if you want to try loading the actual image */}
-        {/*
-        <View style={styles.mascotContainer}>
-          <Image 
-            source={require('../../assets/cat.json')} 
-            style={styles.catImage}
-            resizeMode="contain"
-            onError={(error) => console.log('Image load error:', error)}
-          />
-          <Text style={styles.mascotName}>Whiskers</Text>
-          <Text style={styles.mascotStatus}>Ready to study! 🎃</Text>
-        </View>
-        */}
-
-        {/* Progress Section */}
-        <View style={styles.progressSection}>
-          <Text style={styles.sectionTitle}>Today's Progress</Text>
-          <View style={styles.progressBar}>
-            <View 
-              style={[
-                styles.progressFill, 
-                { width: `${Math.min(100, ((state?.productivity?.focusSessions?.length || 0) / 8) * 100)}%` }
-              ]} 
-            />
+          {/* Progress Section */}
+          <View style={styles.progressSection}>
+            <View style={styles.progressCard}>
+              <Text style={styles.progressTitle}>Today's Progress</Text>
+              <View style={styles.progressBar}>
+                <View 
+                  style={[
+                    styles.progressFill, 
+                    { width: `${Math.min(100, ((state?.productivity?.focusSessions?.length || 0) / 8) * 100)}%` }
+                  ]} 
+                />
+              </View>
+              <Text style={styles.progressText}>
+                {state?.productivity?.focusSessions?.length || 0}/8 focus sessions completed
+              </Text>
+            </View>
           </View>
-          <Text style={styles.progressText}>
-            {state?.productivity?.focusSessions?.length || 0}/8 focus sessions completed
-          </Text>
-        </View>
 
-        {/* Quick Actions */}
-        <View style={styles.quickActions}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.actionsGrid}>
-            <QuickActionCard
-              title="Focus Timer"
-              icon="timer-outline"
-              color={colors.accent}
-              count="25 min"
-            />
-            <QuickActionCard
-              title="My Tasks"
-              icon="list-outline"
-              color={colors.success}
-              count={state?.productivity?.todaysTasks?.length || 0}
-            />
-            <QuickActionCard
-              title="Garden"
-              icon="leaf-outline"
-              color="#27AE60"
-              count={state?.garden?.plants?.length || 0}
-            />
-            <QuickActionCard
-              title="Collection"
-              icon="heart-outline"
-              color="#E74C3C"
-              count={state?.cats?.collection?.length || 1}
-            />
+          {/* Stats Grid */}
+          <View style={styles.statsSection}>
+            <Text style={styles.sectionTitle}>Your Stats</Text>
+            <View style={styles.statsGrid}>
+              <StatsCard
+                label="Focus Streak"
+                value={state?.productivity?.streakCount || 0}
+                icon="flame"
+                color={colors.danger}
+                bgColor={colors.cardPink}
+              />
+              <StatsCard
+                label="Fish Treats"
+                value={state?.user?.fishTreats || 100}
+                icon="fish"
+                color={colors.primary}
+                bgColor={colors.cardBlue}
+              />
+              <StatsCard
+                label="Seeds"
+                value={state?.user?.seeds || 20}
+                icon="leaf"
+                color={colors.success}
+                bgColor={colors.cardGreen}
+              />
+              <StatsCard
+                label="Level"
+                value={state?.user?.level || 1}
+                icon="trophy"
+                color={colors.warning}
+                bgColor={colors.cardYellow}
+              />
+            </View>
           </View>
-        </View>
 
-        {/* Stats Overview */}
-        <View style={styles.statsSection}>
-          <Text style={styles.sectionTitle}>Your Stats</Text>
-          <View style={styles.statsGrid}>
-            <StatsCard
-              label="Focus Streak"
-              value={state?.productivity?.streakCount || 0}
-              icon="flame"
-              color="#E67E22"
-            />
-            <StatsCard
-              label="Fish Treats"
-              value={state?.user?.fishTreats || 100}
-              icon="fish"
-              color="#3498DB"
-            />
-            <StatsCard
-              label="Seeds"
-              value={state?.user?.seeds || 20}
-              icon="leaf"
-              color="#27AE60"
-            />
-            <StatsCard
-              label="Level"
-              value={state?.user?.level || 1}
-              icon="trophy"
-              color="#F39C12"
-            />
+          {/* Motivation Card */}
+          <View style={styles.motivationSection}>
+            <View style={styles.motivationCard}>
+              <View style={styles.motivationHeader}>
+                <Text style={styles.motivationIcon}>✨</Text>
+                <Text style={styles.motivationTitle}>Daily Inspiration</Text>
+              </View>
+              <Text style={styles.motivationText}>
+                "The expert in anything was once a beginner. Start your focus session and take one step closer to mastery!"
+              </Text>
+            </View>
           </View>
-        </View>
-
-        {/* Motivation Card */}
-        <View style={styles.motivationCard}>
-          <Text style={styles.motivationTitle}>💪 Daily Motivation</Text>
-          <Text style={styles.motivationText}>
-            "Every small step counts! Start with just 25 minutes of focused study today."
-          </Text>
-        </View>
-      </ScrollView>
+        </ScrollView>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.background,
   },
   safeArea: {
     flex: 1,
@@ -203,7 +155,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   profileButton: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.surface,
     borderRadius: 20,
     padding: spacing.sm,
     ...shadows.small,
@@ -212,38 +164,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: spacing.xl,
   },
-  catImageContainer: {
+  catContainer: {
     width: 200,
     height: 200,
-    backgroundColor: colors.white,
+    backgroundColor: colors.surface,
     borderRadius: 100,
     justifyContent: 'center',
     alignItems: 'center',
     ...shadows.medium,
-  },
-  catPlaceholder: {
-    fontSize: 80,
+    marginBottom: spacing.md,
   },
   catImage: {
-    width: 200,
-    height: 200,
+    width: 180,
+    height: 180,
   },
   mascotName: {
     fontSize: fontSize.lg,
     fontWeight: '600',
     color: colors.textPrimary,
-    marginTop: spacing.md,
+    marginBottom: spacing.xs,
   },
   mascotStatus: {
     fontSize: fontSize.sm,
     color: colors.textSecondary,
-    marginTop: spacing.xs,
   },
   progressSection: {
     paddingHorizontal: spacing.xl,
     marginBottom: spacing.xl,
   },
-  sectionTitle: {
+  progressCard: {
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.lg,
+    padding: spacing.lg,
+    ...shadows.small,
+  },
+  progressTitle: {
     fontSize: fontSize.lg,
     fontWeight: '600',
     color: colors.textPrimary,
@@ -266,66 +221,30 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     textAlign: 'center',
   },
-  quickActions: {
-    paddingHorizontal: spacing.xl,
-    marginBottom: spacing.xl,
-  },
-  actionsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  actionCard: {
-    width: (width - spacing.xl * 2 - spacing.md) / 2,
-    borderRadius: borderRadius.lg,
-    padding: spacing.lg,
-    marginBottom: spacing.md,
-    ...shadows.medium,
-  },
-  actionCardContent: {
-    alignItems: 'center',
-  },
-  actionIconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: colors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-    ...shadows.small,
-  },
-  actionTitle: {
-    fontSize: fontSize.md,
-    fontWeight: '600',
-    color: colors.textOnPrimary,
-    textAlign: 'center',
-    marginBottom: spacing.xs,
-  },
-  actionCount: {
-    fontSize: fontSize.sm,
-    color: colors.textOnPrimary,
-    opacity: 0.8,
-  },
   statsSection: {
     paddingHorizontal: spacing.xl,
     marginBottom: spacing.xl,
   },
+  sectionTitle: {
+    fontSize: fontSize.lg,
+    fontWeight: '600',
+    color: colors.textPrimary,
+    marginBottom: spacing.md,
+  },
   statsGrid: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   statsCard: {
     width: (width - spacing.xl * 2 - spacing.md) / 2,
-    backgroundColor: colors.white,
-    borderRadius: borderRadius.md,
+    borderRadius: borderRadius.lg,
     padding: spacing.lg,
     alignItems: 'center',
     marginBottom: spacing.md,
     ...shadows.small,
   },
-  statsIcon: {
+  statsIconContainer: {
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -344,19 +263,29 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     textAlign: 'center',
   },
-  motivationCard: {
-    backgroundColor: colors.white,
-    borderRadius: borderRadius.lg,
-    padding: spacing.xl,
-    marginHorizontal: spacing.xl,
+  motivationSection: {
+    paddingHorizontal: spacing.xl,
     marginBottom: spacing.xl,
-    ...shadows.medium,
+  },
+  motivationCard: {
+    backgroundColor: colors.cardPurple,
+    borderRadius: borderRadius.lg,
+    padding: spacing.lg,
+    ...shadows.small,
+  },
+  motivationHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+  },
+  motivationIcon: {
+    fontSize: 24,
+    marginRight: spacing.sm,
   },
   motivationTitle: {
     fontSize: fontSize.lg,
     fontWeight: '600',
     color: colors.textPrimary,
-    marginBottom: spacing.sm,
   },
   motivationText: {
     fontSize: fontSize.md,
