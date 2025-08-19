@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { colors, spacing, borderRadius, fontSize, shadows } from '../constants/theme';
 import { useGame } from '../context/GameContext';
 
@@ -61,12 +62,10 @@ const TimerScreen = () => {
   };
 
   const pauseTimer = () => {
-    setIsRunning(true);
     setIsPaused(true);
   };
 
   const resumeTimer = () => {
-    setIsRunning(true);
     setIsPaused(false);
   };
 
@@ -132,7 +131,11 @@ const TimerScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <LinearGradient
+      colors={['#667eea', '#764ba2']}
+      style={styles.container}
+    >
+      <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <Text style={styles.title}>Focus Timer</Text>
         <Text style={styles.subtitle}>Stay focused and earn rewards!</Text>
@@ -196,7 +199,11 @@ const TimerScreen = () => {
       {/* Control Buttons */}
       <View style={styles.controlButtons}>
         {!isRunning ? (
-          <TouchableOpacity style={styles.startButton} onPress={startTimer}>
+          <TouchableOpacity 
+            style={styles.startButton} 
+            onPress={startTimer}
+            activeOpacity={0.8}
+          >
             <Ionicons name="play" size={24} color={colors.white} />
             <Text style={styles.startButtonText}>Start Focus</Text>
           </TouchableOpacity>
@@ -229,14 +236,17 @@ const TimerScreen = () => {
           • Stay hydrated!
         </Text>
       </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+  },
+  safeArea: {
+    flex: 1,
   },
   header: {
     alignItems: 'center',

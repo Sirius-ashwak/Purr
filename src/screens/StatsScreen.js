@@ -8,6 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { colors, spacing, borderRadius, fontSize, shadows } from '../constants/theme';
 import { useGame } from '../context/GameContext';
 
@@ -90,7 +91,11 @@ const StatsScreen = () => {
   }) || [];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <LinearGradient
+      colors={['#667eea', '#764ba2']}
+      style={styles.container}
+    >
+      <SafeAreaView style={styles.safeArea}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
@@ -229,14 +234,17 @@ const StatsScreen = () => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+  },
+  safeArea: {
+    flex: 1,
   },
   header: {
     paddingHorizontal: spacing.xl,

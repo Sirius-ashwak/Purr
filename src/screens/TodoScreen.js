@@ -11,32 +11,23 @@ import {
   Modal,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { colors, spacing, borderRadius, fontSize, shadows } from '../constants/theme';
 import { useGame } from '../context/GameContext';
 
 const TodoScreen = () => {
   const { state, addTask, completeTask } = useGame();
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showSubjectModal, setShowSubjectModal] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskSubject, setNewTaskSubject] = useState('General');
   const [newTaskPriority, setNewTaskPriority] = useState('medium');
-  const [customSubjects, setCustomSubjects] = useState(['General', 'Math', 'Science', 'Language', 'History', 'Art']);
-  const [newSubject, setNewSubject] = useState('');
 
+  const subjects = ['General', 'Math', 'Science', 'Language', 'History', 'Art'];
   const priorities = [
     { key: 'low', label: 'Low', color: colors.success },
     { key: 'medium', label: 'Medium', color: colors.warning },
     { key: 'high', label: 'High', color: colors.danger },
   ];
-
-  const addCustomSubject = () => {
-    if (newSubject.trim() && !customSubjects.includes(newSubject.trim())) {
-      setCustomSubjects([...customSubjects, newSubject.trim()]);
-      setNewSubject('');
-      setShowSubjectModal(false);
-    }
-  };
 
   const handleAddTask = () => {
     if (newTaskTitle.trim()) {
@@ -53,7 +44,18 @@ const TodoScreen = () => {
   };
 
   const handleCompleteTask = (taskId) => {
-    completeTask(taskId);
+    Alert.alert(
+      'Complete Task',
+      'Mark this task as completed?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Complete', 
+          onPress: () => completeTask(taskId),
+          style: 'default'
+        },
+      ]
+    );
   };
 
   const getPriorityColor = (priority) => {
@@ -114,7 +116,11 @@ const TodoScreen = () => {
   const pendingTasks = state.productivity.todaysTasks.filter(task => !task.completed);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <LinearGradient
+      colors={['#667eea', '#764ba2']}
+      style={styles.container}
+    >
+      <SafeAreaView style={styles.safeArea}>
       {/* Header */}
       <View style={styles.header}>
         <View>
@@ -219,7 +225,7 @@ const TodoScreen = () => {
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Subject</Text>
               <View style={styles.optionsGrid}>
-                {customSubjects.map((subject) => (
+                {subjects.map((subject) => (
                   <TouchableOpacity
                     key={subject}
                     style={[
@@ -241,13 +247,6 @@ const TodoScreen = () => {
                     </Text>
                   </TouchableOpacity>
                 ))}
-                <TouchableOpacity
-                  style={styles.addSubjectButton}
-                  onPress={() => setShowSubjectModal(true)}
-                >
-                  <Ionicons name="add" size={16} color={colors.accent} />
-                  <Text style={styles.addSubjectText}>Add Subject</Text>
-                </TouchableOpacity>
               </View>
             </View>
 
@@ -278,47 +277,17 @@ const TodoScreen = () => {
           </View>
         </SafeAreaView>
       </Modal>
-
-      {/* Add Subject Modal */}
-      <Modal
-        visible={showSubjectModal}
-        animationType="slide"
-        presentationStyle="pageSheet"
-      >
-        <SafeAreaView style={styles.modalContainer}>
-          <View style={styles.modalHeader}>
-            <TouchableOpacity onPress={() => setShowSubjectModal(false)}>
-              <Text style={styles.modalCancel}>Cancel</Text>
-            </TouchableOpacity>
-            <Text style={styles.modalTitle}>Add New Subject</Text>
-            <TouchableOpacity onPress={addCustomSubject}>
-              <Text style={styles.modalSave}>Add</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.modalContent}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Subject Name</Text>
-              <TextInput
-                style={styles.textInput}
-                value={newSubject}
-                onChangeText={setNewSubject}
-                placeholder="Enter subject name..."
-                placeholderTextColor={colors.textMuted}
-                autoFocus
-              />
-            </View>
-          </View>
-        </SafeAreaView>
-      </Modal>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+  },
+  safeArea: {
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -563,23 +532,6 @@ const styles = StyleSheet.create({
   },
   priorityButtonText: {
     fontSize: fontSize.sm,
-    fontWeight: '600',
-  },
-  addSubjectButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.sm,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderWidth: 2,
-    borderColor: colors.accent,
-    borderStyle: 'dashed',
-  },
-  addSubjectText: {
-    fontSize: fontSize.sm,
-    color: colors.accent,
-    marginLeft: spacing.xs,
     fontWeight: '600',
   },
 });
