@@ -1,13 +1,13 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { GameProvider } from './src/context/GameContext';
-import HomeScreen from './src/screens/HomeScreen';
+import MainScreen from './src/screens/MainScreen';
 
 export default function App() {
   return (
     <GameProvider>
-      <HomeScreen />
-      <StatusBar style="light" />
+      <MainScreen />
+      <StatusBar style="dark" />
     </GameProvider>
   );
 }

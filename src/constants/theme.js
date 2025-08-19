@@ -1,35 +1,36 @@
-// Purple gradient theme inspired by Study Bunny
+// Study Bunny inspired theme
 export const colors = {
-  // Primary purple gradient
-  gradientStart: '#8B5CF6', // Purple-500
-  gradientMiddle: '#A855F7', // Purple-400
-  gradientEnd: '#C084FC', // Purple-300
-  
-  // Brand colors
-  primary: '#8B5CF6',
+  // Primary colors - soft pastels
+  primary: '#8B5CF6', // Purple
+  primaryLight: '#A78BFA',
   primaryDark: '#7C3AED',
-  primaryLight: '#A855F7',
-  accent: '#F59E0B', // Warm yellow accent
   
-  // Surfaces
-  background: '#F8FAFC', // Very light gray
+  // Background colors
+  background: '#F8FAFC', // Very light gray-blue
   surface: '#FFFFFF',
   surfaceSecondary: '#F1F5F9',
-  cardBackground: 'rgba(255, 255, 255, 0.95)',
   
-  // Text
-  textPrimary: '#1E293B',
-  textSecondary: '#64748B',
-  textOnPrimary: '#FFFFFF',
-  textMuted: '#94A3B8',
-  
-  // Semantic colors
-  success: '#10B981',
+  // Accent colors - soft and friendly
+  accent: '#F59E0B', // Warm yellow
+  accentLight: '#FCD34D',
+  success: '#10B981', // Mint green
   warning: '#F59E0B',
   danger: '#EF4444',
-  info: '#3B82F6',
   
-  // Special
+  // Text colors
+  textPrimary: '#1E293B',
+  textSecondary: '#64748B',
+  textMuted: '#94A3B8',
+  textOnPrimary: '#FFFFFF',
+  
+  // Card colors - soft pastels
+  cardPink: '#FDF2F8',
+  cardBlue: '#EFF6FF',
+  cardGreen: '#F0FDF4',
+  cardYellow: '#FFFBEB',
+  cardPurple: '#FAF5FF',
+  
+  // Special colors
   white: '#FFFFFF',
   shadow: 'rgba(0, 0, 0, 0.1)',
   overlay: 'rgba(0, 0, 0, 0.5)',
