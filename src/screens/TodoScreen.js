@@ -117,7 +117,7 @@ const TodoScreen = () => {
 
   return (
     <LinearGradient
-      colors={['#667eea', '#764ba2']}
+      colors={[colors.gradientStart, colors.gradientEnd]}
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     ...shadows.medium,
   },
   progressCard: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.white,
     borderRadius: borderRadius.lg,
     padding: spacing.lg,
     marginHorizontal: spacing.xl,
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   taskItem: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.white,
     borderRadius: borderRadius.md,
     marginBottom: spacing.sm,
     ...shadows.small,

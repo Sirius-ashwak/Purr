@@ -46,7 +46,7 @@ const HomeScreen = () => {
 
   return (
     <LinearGradient
-      colors={['#667eea', '#764ba2']}
+      colors={[colors.gradientStart, colors.gradientEnd]}
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
@@ -64,14 +64,27 @@ const HomeScreen = () => {
 
         {/* Cat Mascot with Pumpkin */}
         <View style={styles.mascotContainer}>
+          <View style={styles.catImageContainer}>
+            <Text style={styles.catPlaceholder}>🐱🎃</Text>
+          </View>
+          <Text style={styles.mascotName}>Whiskers</Text>
+          <Text style={styles.mascotStatus}>Ready to study! 🎃</Text>
+        </View>
+
+        {/* Alternative: Try to load the actual image */}
+        {/* Uncomment this section if you want to try loading the actual image */}
+        {/*
+        <View style={styles.mascotContainer}>
           <Image 
-            source={require('../../assets/cat-with-pumpkin.json')} 
+            source={require('../../assets/cat.json')} 
             style={styles.catImage}
             resizeMode="contain"
+            onError={(error) => console.log('Image load error:', error)}
           />
           <Text style={styles.mascotName}>Whiskers</Text>
           <Text style={styles.mascotStatus}>Ready to study! 🎃</Text>
         </View>
+        */}
 
         {/* Progress Section */}
         <View style={styles.progressSection}>
@@ -190,11 +203,26 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   profileButton: {
+    backgroundColor: colors.white,
+    borderRadius: 20,
     padding: spacing.sm,
+    ...shadows.small,
   },
   mascotContainer: {
     alignItems: 'center',
     paddingVertical: spacing.xl,
+  },
+  catImageContainer: {
+    width: 200,
+    height: 200,
+    backgroundColor: colors.white,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...shadows.medium,
+  },
+  catPlaceholder: {
+    fontSize: 80,
   },
   catImage: {
     width: 200,
@@ -261,21 +289,22 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: colors.white,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.sm,
+    ...shadows.small,
   },
   actionTitle: {
     fontSize: fontSize.md,
     fontWeight: '600',
-    color: colors.white,
+    color: colors.textOnPrimary,
     textAlign: 'center',
     marginBottom: spacing.xs,
   },
   actionCount: {
     fontSize: fontSize.sm,
-    color: colors.white,
+    color: colors.textOnPrimary,
     opacity: 0.8,
   },
   statsSection: {
@@ -289,7 +318,7 @@ const styles = StyleSheet.create({
   },
   statsCard: {
     width: (width - spacing.xl * 2 - spacing.md) / 2,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.white,
     borderRadius: borderRadius.md,
     padding: spacing.lg,
     alignItems: 'center',
@@ -316,7 +345,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   motivationCard: {
-    backgroundColor: colors.primaryLight,
+    backgroundColor: colors.white,
     borderRadius: borderRadius.lg,
     padding: spacing.xl,
     marginHorizontal: spacing.xl,
@@ -326,14 +355,13 @@ const styles = StyleSheet.create({
   motivationTitle: {
     fontSize: fontSize.lg,
     fontWeight: '600',
-    color: colors.white,
+    color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
   motivationText: {
     fontSize: fontSize.md,
-    color: colors.white,
+    color: colors.textSecondary,
     lineHeight: 22,
-    opacity: 0.9,
   },
 });
 

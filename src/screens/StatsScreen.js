@@ -92,7 +92,7 @@ const StatsScreen = () => {
 
   return (
     <LinearGradient
-      colors={['#667eea', '#764ba2']}
+      colors={[colors.gradientStart, colors.gradientEnd]}
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   statCard: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.white,
     borderRadius: borderRadius.lg,
     padding: spacing.lg,
     marginBottom: spacing.sm,
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   topSubjectCard: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.white,
     borderRadius: borderRadius.lg,
     padding: spacing.lg,
     marginHorizontal: spacing.xl,
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   subjectsList: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.white,
     borderRadius: borderRadius.lg,
     padding: spacing.lg,
     ...shadows.small,
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   achievementsList: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.white,
     borderRadius: borderRadius.lg,
     padding: spacing.lg,
     ...shadows.small,

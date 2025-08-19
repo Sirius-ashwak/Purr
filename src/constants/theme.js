@@ -1,32 +1,32 @@
 // Study Bunny inspired theme
 export const colors = {
   // Primary colors - warm and cozy
-  primary: '#667eea', // Purple gradient start
-  primaryLight: '#764ba2', // Purple gradient end
-  primaryDark: '#5a67d8',
+  primary: '#B794F6', // Light purple
+  primaryLight: '#E9D8FD', // Very light purple
+  primaryDark: '#9F7AEA',
   
   // Background colors - warm beige/cream
-  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', // Purple gradient
-  surface: 'rgba(255, 255, 255, 0.1)',
-  surfaceSecondary: 'rgba(255, 255, 255, 0.05)',
+  background: '#F7FAFC', // Very light background
+  surface: '#FFFFFF',
+  surfaceSecondary: '#EDF2F7',
   
   // Accent colors
-  accent: '#ff6b6b', // Bright accent
-  accentLight: '#ff8e8e',
-  success: '#51cf66', // Soft green
-  warning: '#ffd43b',
-  danger: '#ff6b6b',
+  accent: '#9F7AEA', // Purple accent
+  accentLight: '#B794F6',
+  success: '#68D391', // Soft green
+  warning: '#F6E05E',
+  danger: '#FC8181',
   
   // Text colors
-  textPrimary: '#FFFFFF',
-  textSecondary: 'rgba(255, 255, 255, 0.8)',
-  textMuted: 'rgba(255, 255, 255, 0.6)',
+  textPrimary: '#2D3748',
+  textSecondary: '#4A5568',
+  textMuted: '#718096',
   textOnPrimary: '#FFFFFF',
   
   // UI element colors
-  progressGreen: '#7FB069',
+  progressGreen: '#68D391',
   progressBackground: '#E8E8E8',
-  currencyBackground: '#E8E8E8',
+  currencyBackground: '#EDF2F7',
   buttonBackground: '#FFFFFF',
   
   // Room colors
@@ -36,9 +36,13 @@ export const colors = {
   
   // Special colors
   white: '#FFFFFF',
-  black: '#2C3E50',
+  black: '#1A202C',
   shadow: 'rgba(0, 0, 0, 0.1)',
   overlay: 'rgba(0, 0, 0, 0.5)',
+  
+  // Gradient colors
+  gradientStart: '#E9D8FD',
+  gradientEnd: '#B794F6',
 };
 
 export const spacing = {

@@ -132,7 +132,7 @@ const TimerScreen = () => {
 
   return (
     <LinearGradient
-      colors={['#667eea', '#764ba2']}
+      colors={[colors.gradientStart, colors.gradientEnd]}
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     borderRadius: 125,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.white,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
     borderRadius: borderRadius.md,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.white,
     borderWidth: 2,
     borderColor: colors.progressBackground,
     ...shadows.small,
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
     borderRadius: borderRadius.sm,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.progressBackground,
   },
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
     ...shadows.medium,
   },
   tipsCard: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.white,
     borderRadius: borderRadius.lg,
     padding: spacing.lg,
     marginHorizontal: spacing.xl,
