@@ -61,10 +61,12 @@ const TimerScreen = () => {
   };
 
   const pauseTimer = () => {
+    setIsRunning(true);
     setIsPaused(true);
   };
 
   const resumeTimer = () => {
+    setIsRunning(true);
     setIsPaused(false);
   };
 

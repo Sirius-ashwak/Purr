@@ -1,26 +1,27 @@
 // Study Bunny inspired theme
 export const colors = {
   // Primary colors - warm and cozy
-  primary: '#8B7355', // Warm brown
-  primaryLight: '#A68B5B',
-  primaryDark: '#6B5B47',
+  primary: '#8B5CF6', // Purple
+  primaryLight: '#A78BFA',
+  primaryDark: '#7C3AED',
   
   // Background colors - warm beige/cream
-  background: '#F5E6D3', // Warm cream background
+  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', // Purple gradient
+  backgroundSolid: '#8B5CF6', // Fallback solid purple
   surface: '#FFFFFF',
-  surfaceSecondary: '#F0E6D6',
+  surfaceSecondary: '#F3F4F6',
   
   // Accent colors
-  accent: '#E67E22', // Orange
-  accentLight: '#F39C12',
+  accent: '#10B981', // Green accent
+  accentLight: '#34D399',
   success: '#7FB069', // Soft green
   warning: '#F39C12',
   danger: '#E74C3C',
   
   // Text colors
   textPrimary: '#2C3E50',
-  textSecondary: '#5D4E37',
-  textMuted: '#8B7355',
+  textSecondary: '#6B7280',
+  textMuted: '#9CA3AF',
   textOnPrimary: '#FFFFFF',
   
   // UI element colors
@@ -30,9 +31,9 @@ export const colors = {
   buttonBackground: '#FFFFFF',
   
   // Room colors
-  roomWall: '#D4C4A8',
-  roomFloor: '#C8B99C',
-  roomAccent: '#A68B5B',
+  roomWall: '#E5E7EB',
+  roomFloor: '#F3F4F6',
+  roomAccent: '#8B5CF6',
   
   // Special colors
   white: '#FFFFFF',
