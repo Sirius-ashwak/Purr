@@ -9,7 +9,8 @@ import {
   Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { SvgUri } from 'react-native-svg';
+import { LinearGradient } from 'expo-linear-gradient';
+import LottieView from 'lottie-react-native';
 import { colors, spacing, borderRadius, fontSize, shadows } from '../constants/theme';
 import { useGame } from '../context/GameContext';
 
@@ -29,14 +30,17 @@ const HomeScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
+      style={styles.container}
+    >
       <SafeAreaView style={styles.safeArea}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Header */}
           <View style={styles.header}>
             <View>
-              <Text style={styles.greeting}>Hello there! 👋</Text>
-              <Text style={styles.subtitle}>Ready to focus and learn?</Text>
+              <Text style={styles.greeting}>Happy Fall Studies! 🎃</Text>
+              <Text style={styles.subtitle}>Time to harvest knowledge! 🍂</Text>
             </View>
             <TouchableOpacity style={styles.profileButton}>
               <Ionicons name="person-circle" size={32} color={colors.primary} />
@@ -46,14 +50,14 @@ const HomeScreen = () => {
           {/* Cat Mascot */}
           <View style={styles.mascotContainer}>
             <View style={styles.catContainer}>
-              <SvgUri
-                uri="./assets/cat.svg"
-                width={180}
-                height={180}
+              <LottieView
+                source={require('../../assets/cat-with-pumpkin.json')}
                 style={styles.catImage}
+                autoPlay
+                loop
               />
             </View>
-            <Text style={styles.mascotName}>Study Buddy</Text>
+            <Text style={styles.mascotName}>Pumpkin Purr</Text>
             <Text style={styles.mascotStatus}>Let's learn together! 📚</Text>
           </View>
 
@@ -124,14 +128,13 @@ const HomeScreen = () => {
           </View>
         </ScrollView>
       </SafeAreaView>
-    </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   safeArea: {
     flex: 1,

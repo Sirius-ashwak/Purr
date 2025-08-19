@@ -14,10 +14,10 @@ const Header = () => {
       
       <View style={styles.rightSection}>
         <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="search-outline" size={24} color={colors.textPrimary} />
+          <Ionicons name="search-outline" size={24} color={colors.white} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="person-circle-outline" size={24} color={colors.textPrimary} />
+          <Ionicons name="person-circle-outline" size={24} color={colors.white} />
         </TouchableOpacity>
       </View>
     </View>
@@ -41,8 +41,11 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 20,
     fontWeight: '700',
-  color: colors.textPrimary,
+    color: colors.white,
     marginLeft: 10,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   rightSection: {
     flexDirection: 'row',
@@ -52,7 +55,12 @@ const styles = StyleSheet.create({
   iconButton: {
     padding: 8,
     borderRadius: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
 });
 

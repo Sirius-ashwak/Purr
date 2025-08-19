@@ -1,46 +1,47 @@
-// Modern, fresh theme with vibrant colors
+// Soft Purple Gradient Theme - Elegant and Subtle
 export const colors = {
-  // Primary colors - Fresh and modern
-  primary: '#6366F1', // Indigo
-  primaryLight: '#A5B4FC',
-  primaryDark: '#4F46E5',
+  // Primary colors - Soft Purple Theme
+  primary: '#B794F6', // Soft purple
+  primaryLight: '#D6BCFA',
+  primaryDark: '#9F7AEA',
   
-  // Background colors - Clean and bright
-  background: '#FAFAFA', // Very light gray
+  // Background colors - Clean and soft
+  background: '#FDFCFE', // Very light purple tint
   surface: '#FFFFFF',
-  surfaceSecondary: '#F8FAFC',
+  surfaceSecondary: '#FAF9FC',
   
-  // Accent colors - Vibrant and energetic
-  accent: '#EC4899', // Pink
-  accentLight: '#F472B6',
-  success: '#10B981', // Emerald
-  warning: '#F59E0B', // Amber
-  danger: '#EF4444', // Red
+  // Accent colors - Harmonious purples
+  accent: '#E879F9', // Light magenta
+  accentLight: '#F0ABFC',
+  success: '#A78BFA', // Purple success
+  warning: '#C084FC', // Purple warning
+  danger: '#E879F9', // Purple danger
   
-  // Text colors - High contrast
-  textPrimary: '#1F2937', // Dark gray
-  textSecondary: '#6B7280', // Medium gray
-  textMuted: '#9CA3AF', // Light gray
+  // Text colors - Elegant contrast
+  textPrimary: '#4C1D95', // Deep purple
+  textSecondary: '#7C3AED', // Medium purple
+  textMuted: '#A78BFA', // Light purple
   textOnPrimary: '#FFFFFF',
   
-  // Special colors
-  progressGreen: '#10B981',
-  progressBackground: '#E5E7EB',
+  // Special colors - Purple theme
+  progressGreen: '#A78BFA', // Purple progress
+  progressBackground: '#F3F4F6',
   
-  // Gradient colors - Fresh and modern
-  gradientStart: '#667EEA', // Blue
-  gradientEnd: '#764BA2', // Purple
+  // Gradient colors - Subtle Purple Gradients
+  gradientStart: '#E0E7FF', // Very light purple
+  gradientMid: '#C4B5FD',   // Light purple
+  gradientEnd: '#A78BFA',   // Medium purple
   
-  // Card colors
-  cardPink: '#FDF2F8',
-  cardBlue: '#EFF6FF',
-  cardGreen: '#ECFDF5',
-  cardYellow: '#FFFBEB',
-  cardPurple: '#F3E8FF',
+  // Card colors - Soft purple variations
+  cardPink: '#FAF5FF',
+  cardBlue: '#F0F4FF',
+  cardGreen: '#F5F3FF',
+  cardYellow: '#FEFCE8',
+  cardPurple: '#F9FAFB',
   
   white: '#FFFFFF',
-  black: '#111827',
-  shadow: 'rgba(0, 0, 0, 0.1)',
+  black: '#2D1B69',
+  shadow: 'rgba(139, 92, 246, 0.1)',
 };
 
 export const spacing = {

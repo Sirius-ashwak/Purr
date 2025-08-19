@@ -9,6 +9,7 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import StudyBunnyMascot from '../components/StudyBunnyMascot';
 import RoomBackground from '../components/RoomBackground';
 import { useGame } from '../context/GameContext';
@@ -64,7 +65,11 @@ const MainScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <LinearGradient
+      colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
+      style={styles.container}
+    >
+      <SafeAreaView style={styles.safeArea}>
       <RoomBackground />
       
       {/* Top Progress Bar */}
@@ -109,14 +114,17 @@ const MainScreen = () => {
         <BottomNavButton icon="bar-chart-outline" />
         <BottomNavButton icon="ellipsis-horizontal" />
       </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+  },
+  safeArea: {
+    flex: 1,
   },
   progressContainer: {
     paddingHorizontal: spacing.xl,

@@ -48,7 +48,7 @@ const GameDashboard = () => {
           <Text style={styles.catBreed}>{activeCat?.breed} {activeCat?.personality}</Text>
           <Text style={styles.catAbility}>💫 {activeCat?.abilityDescription}</Text>
         </View>
-  <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
+  <Ionicons name="chevron-forward" size={20} color={colors.white} />
       </TouchableOpacity>
 
       {/* Quick Stats */}
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 20,
-  backgroundColor: colors.surface,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderRadius: 15,
     padding: 15,
     shadowColor: '#000',
@@ -127,19 +127,22 @@ const styles = StyleSheet.create({
   currencyAmount: {
     fontSize: 18,
     fontWeight: '700',
-  color: colors.textPrimary,
+    color: colors.white,
     marginTop: 5,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   currencyLabel: {
     fontSize: 12,
-  color: colors.textSecondary,
+    color: 'rgba(255, 255, 255, 0.9)',
     marginTop: 2,
   },
   activeCatSection: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  backgroundColor: '#F8F9FA',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderRadius: 15,
     padding: 15,
     marginBottom: 20,
@@ -150,17 +153,20 @@ const styles = StyleSheet.create({
   catName: {
     fontSize: 16,
     fontWeight: '600',
-  color: colors.textPrimary,
+    color: colors.white,
     marginBottom: 2,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   catBreed: {
     fontSize: 14,
-    color: '#7F8C8D',
+    color: 'rgba(255, 255, 255, 0.8)',
     marginBottom: 4,
   },
   catAbility: {
     fontSize: 12,
-  color: colors.accent,
+    color: 'rgba(255, 255, 255, 0.9)',
     fontStyle: 'italic',
   },
   statsGrid: {
@@ -171,7 +177,7 @@ const styles = StyleSheet.create({
   },
   statCard: {
     width: '48%',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 12,
     padding: 15,
     alignItems: 'center',
@@ -185,16 +191,19 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 20,
     fontWeight: '700',
-  color: colors.accent,
+    color: colors.white,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   statLabel: {
     fontSize: 12,
-    color: '#7F8C8D',
+    color: 'rgba(255, 255, 255, 0.9)',
     marginTop: 4,
     textAlign: 'center',
   },
   progressSection: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderRadius: 15,
     padding: 15,
     marginBottom: 20,
@@ -202,28 +211,31 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2C3E50',
+    color: colors.white,
     marginBottom: 10,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   progressBar: {
     height: 8,
-    backgroundColor: '#E9ECEF',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     borderRadius: 4,
     marginBottom: 8,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-  backgroundColor: colors.success,
+    backgroundColor: colors.accent,
     borderRadius: 4,
   },
   progressText: {
     fontSize: 12,
-    color: '#7F8C8D',
+    color: 'rgba(255, 255, 255, 0.9)',
     textAlign: 'center',
   },
   gardenSection: {
-    backgroundColor: '#E8F5E8',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderRadius: 15,
     padding: 15,
   },
@@ -237,11 +249,14 @@ const styles = StyleSheet.create({
   gardenValue: {
     fontSize: 16,
     fontWeight: '600',
-  color: colors.success,
+    color: colors.white,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   gardenLabel: {
     fontSize: 12,
-  color: colors.textSecondary,
+    color: 'rgba(255, 255, 255, 0.9)',
     marginTop: 2,
   },
 });

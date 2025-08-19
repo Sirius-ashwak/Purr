@@ -34,8 +34,8 @@ const FeatureCard = ({ title, icon, color, count, onPress }) => {
         ]}
       >
         <View style={styles.leftSection}>
-          <View style={[styles.iconContainer, { backgroundColor: colors.surface }]}> 
-            <Ionicons name={icon} size={24} color={colors.textPrimary} />
+          <View style={[styles.iconContainer, { backgroundColor: 'rgba(255, 255, 255, 0.9)' }]}> 
+            <Ionicons name={icon} size={24} color={colors.primary} />
           </View>
           <View style={styles.textContainer}>
             <Text style={styles.title}>{title}</Text>
@@ -44,7 +44,7 @@ const FeatureCard = ({ title, icon, color, count, onPress }) => {
         </View>
         
         <View style={styles.rightSection}>
-          <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
+          <Ionicons name="chevron-forward" size={20} color={colors.white} />
         </View>
       </Animated.View>
     </TouchableOpacity>
@@ -107,12 +107,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-  color: colors.textPrimary,
+    color: colors.white,
     marginBottom: 3,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   count: {
     fontSize: 14,
-  color: colors.textSecondary,
+    color: 'rgba(255, 255, 255, 0.9)',
     fontWeight: '400',
   },
   rightSection: {

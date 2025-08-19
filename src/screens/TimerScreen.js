@@ -10,6 +10,8 @@ import {
   Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import LottieView from 'lottie-react-native';
 import { colors, spacing, borderRadius, fontSize, shadows } from '../constants/theme';
 import { useGame } from '../context/GameContext';
 
@@ -169,7 +171,10 @@ const TimerScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
+      style={styles.container}
+    >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <Text style={styles.title}>Focus Timer</Text>
@@ -276,14 +281,13 @@ const TimerScreen = () => {
           )}
         </View>
       </SafeAreaView>
-    </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   safeArea: {
     flex: 1,
@@ -438,6 +442,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderRadius: borderRadius.xl,
     paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.xl,
+    marginHorizontal: spacing.lg,
     ...shadows.medium,
   },
   startButtonText: {
