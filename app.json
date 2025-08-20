@@ -13,18 +13,27 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.purrplan.world"
+      "bundleIdentifier": "com.purrplan.world",
+      "newArchEnabled": false
     },
     "android": {
       "adaptiveIcon": {
-  "backgroundColor": "#4a148c"
+        "backgroundColor": "#4a148c"
       },
-      "package": "com.purrplan.world"
+      "package": "com.purrplan.world",
+      "newArchEnabled": false
+    },
+    "web": {
+      "bundler": "metro",
+      "newArchEnabled": false
     },
     
     "plugins": [],
     "experiments": {
-      "typedRoutes": false
-    }
+      "typedRoutes": false,
+      "turboModules": false
+    },
+    "jsEngine": "hermes",
+    "newArchEnabled": false
   }
 }
