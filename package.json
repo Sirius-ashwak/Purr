@@ -1,7 +1,7 @@
 {
-  "name": "purrplan-world",
+  "name": "purr-app",
   "version": "1.0.0",
-  "description": "A modern, playful mobile app for task planning with a cute cat mascot",
+  "description": "Purr! - A modern, playful mobile app with a cute cat mascot that makes you purr with productivity",
   "main": "index.js",
   "scripts": {
     "start": "expo start",
@@ -39,9 +39,12 @@
     "react-native",
     "expo",
     "mobile-app",
-    "task-planner",
-    "cat-mascot"
+    "purr",
+    "cat-sounds",
+    "cat-mascot",
+    "productivity",
+    "study-app"
   ],
-  "author": "PurrPlan Team",
+  "author": "Purr! Team",
   "license": "MIT"
 }

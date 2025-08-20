@@ -1,8 +1,8 @@
 {
   "expo": {
   "platforms": ["ios", "android", "web"],
-    "name": "PurrPlan World",
-    "slug": "purrplan-world",
+    "name": "Purr!",
+    "slug": "purr-app",
     "version": "1.0.0",
     "orientation": "portrait",
     
@@ -13,14 +13,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.purrplan.world",
+      "bundleIdentifier": "com.purr.app",
       "newArchEnabled": false
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#4a148c"
       },
-      "package": "com.purrplan.world",
+      "package": "com.purr.app",
       "newArchEnabled": false
     },
     "web": {

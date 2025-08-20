@@ -9,7 +9,7 @@ const Header = () => {
     <View style={styles.container}>
       <View style={styles.logoSection}>
         <PawClockLogo />
-        <Text style={styles.appName}>PurrPlan World</Text>
+        <Text style={styles.appName}>Purr!</Text>
       </View>
       
       <View style={styles.rightSection}>

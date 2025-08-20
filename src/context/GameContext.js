@@ -206,7 +206,7 @@ export const GameProvider = ({ children }) => {
 
   const loadGameState = async () => {
     try {
-      const savedState = await AsyncStorage.getItem('purrPlanState');
+      const savedState = await AsyncStorage.getItem('purrAppState');
       if (savedState) {
         const parsedState = JSON.parse(savedState);
         dispatch({ type: actionTypes.LOAD_STATE, state: parsedState });
@@ -218,7 +218,7 @@ export const GameProvider = ({ children }) => {
 
   const saveGameState = async (currentState) => {
     try {
-      await AsyncStorage.setItem('purrPlanState', JSON.stringify(currentState));
+      await AsyncStorage.setItem('purrAppState', JSON.stringify(currentState));
     } catch (error) {
       console.error('Error saving game state:', error);
     }
