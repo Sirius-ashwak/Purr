@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: purr-app
+    env: node
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 18.17.0
+      - key: NPM_VERSION
+        value: 9.6.7
+    healthCheckPath: /
+    plan: free

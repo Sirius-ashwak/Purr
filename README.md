@@ -145,7 +145,54 @@ src/
 - **Legacy Architecture**: Optimized for stability and performance
 - **Cross-Platform**: Consistent experience across iOS, Android, and Web
 
-## 🔧 Development Notes
+## � Deployment
+
+### Deploy to Render
+
+1. **Prepare your repository:**
+   ```bash
+   git add .
+   git commit -m "Ready for deployment"
+   git push origin main
+   ```
+
+2. **Create a new Web Service on Render:**
+   - Go to [Render Dashboard](https://dashboard.render.com/)
+   - Click **New +** → **Web Service**
+   - Connect your GitHub repository
+   - Choose the branch (main)
+
+3. **Configure build settings:**
+   - **Build Command:** `npm ci && npm run build`
+   - **Start Command:** `npm start`
+   - **Node Version:** `18.17.0` (set in Environment Variables)
+
+4. **Deploy:**
+   - Click **Create Web Service**
+   - Wait for build and deployment
+   - Your Purr! app will be live on the web!
+
+### Alternative: Docker Deployment
+
+```bash
+# Build the Docker image
+docker build -t purr-app .
+
+# Run the container
+docker run -p 3000:3000 purr-app
+```
+
+### Build for Production Locally
+
+```bash
+# Build the web version
+npm run build
+
+# Serve locally to test
+npm start
+```
+
+## �🔧 Development Notes
 
 ### TurboModule Configuration
 - Configured to disable New Architecture for Expo SDK 53 compatibility
