@@ -11,5 +11,7 @@ services:
         value: 9.6.7
       - key: NODE_ENV
         value: production
+      - key: EXPO_USE_LEGACY_PACKAGER
+        value: "1"
     healthCheckPath: /
     plan: free
