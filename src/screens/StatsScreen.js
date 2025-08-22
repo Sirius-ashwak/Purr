@@ -43,7 +43,6 @@ const StatsScreen = () => {
           <Text style={styles.statValue}>{value}</Text>
           <Text style={styles.statTitle}>{title}</Text>
           {subtitle && <Text style={styles.statSubtitle}>{subtitle}</Text>}
-          }
         </View>
         <View style={[styles.statIcon, { backgroundColor: color }]}>
           <Ionicons name={icon} size={24} color={colors.white} />

@@ -7,6 +7,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  Platform,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -42,9 +44,6 @@ const HomeScreen = () => {
               <Text style={styles.greeting}>Happy Fall Studies! 🎃</Text>
               <Text style={styles.subtitle}>Time to harvest knowledge! 🍂</Text>
             </View>
-            <TouchableOpacity style={styles.profileButton}>
-              <Ionicons name="person-circle" size={32} color={colors.primary} />
-            </TouchableOpacity>
           </View>
 
           {/* Cat Mascot */}

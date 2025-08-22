@@ -1,10 +1,26 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import PawClockLogo from './PawClockLogo';
 import { colors } from '../constants/theme';
 
 const Header = () => {
+  const handleSearchPress = () => {
+    if (Platform.OS === 'web') {
+      alert('Search feature coming soon! 🔍');
+    } else {
+      Alert.alert('Search', 'Search feature coming soon! 🔍');
+    }
+  };
+
+  const handleAccountPress = () => {
+    if (Platform.OS === 'web') {
+      alert('Account settings coming soon! 👤');
+    } else {
+      Alert.alert('Account', 'Account settings coming soon! 👤');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.logoSection}>
@@ -13,10 +29,18 @@ const Header = () => {
       </View>
       
       <View style={styles.rightSection}>
-        <TouchableOpacity style={styles.iconButton}>
+        <TouchableOpacity 
+          style={styles.iconButton}
+          onPress={handleSearchPress}
+          activeOpacity={0.7}
+        >
           <Ionicons name="search-outline" size={24} color={colors.white} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton}>
+        <TouchableOpacity 
+          style={styles.iconButton}
+          onPress={handleAccountPress}
+          activeOpacity={0.7}
+        >
           <Ionicons name="person-circle-outline" size={24} color={colors.white} />
         </TouchableOpacity>
       </View>
@@ -61,6 +85,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+      transitionDuration: '200ms',
+    }),
   },
 });
 
