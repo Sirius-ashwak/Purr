@@ -1,47 +1,48 @@
-// Ultra Light Purple Gradient Theme - Barely Noticeable Elegance
+// Retro Subtle Color Theme - Muted, Vintage-Inspired Palette
 export const colors = {
-  // Primary colors - Ultra Pale Purple Theme
-  primary: '#5B21B6', // Deep purple
-  primaryLight: '#7C3AED',
-  primaryDark: '#4C1D95',
+  // Primary colors - Muted retro tones
+  primary: '#8B7355', // Warm brown
+  primaryLight: '#A0845C',
+  primaryDark: '#6B5B47',
   
-  // Background colors - Almost white with hint of purple
-  background: '#F3F4F6', // Light gray background
-  surface: '#FFFFFF', // Pure white
-  surfaceSecondary: '#E5E7EB',
+  // Background colors - Soft cream and beige
+  background: '#F7F3E9', // Warm cream
+  surface: '#FEFCF3', // Off-white cream
+  surfaceSecondary: '#F0EBD8',
   
-  // Accent colors - Very subtle purples
-  accent: '#DC2626', // Bright red
-  accentLight: '#EF4444',
-  success: '#059669', // Dark green
-  warning: '#D97706', // Dark orange
-  danger: '#DC2626', // Bright red
+  // Accent colors - Muted retro palette
+  accent: '#D4A574', // Dusty orange
+  accentLight: '#E1B887',
+  success: '#8FBC8F', // Sage green
+  warning: '#DAA520', // Goldenrod
+  danger: '#CD853F', // Peru/dusty red
   
-  // Text colors - High contrast for excellent readability
-  textPrimary: '#111827', // Very dark gray
-  textSecondary: '#374151', // Dark gray
-  textMuted: '#6B7280', // Medium gray
-  textOnPrimary: '#FFFFFF', // White text on colored backgrounds
+  // Text colors - Soft contrast
+  textPrimary: '#4A4A4A', // Soft dark gray
+  textSecondary: '#6B6B6B', // Medium gray
+  textMuted: '#8E8E8E', // Light gray
+  textOnPrimary: '#FEFCF3', // Cream text on colored backgrounds
   
-  // Special colors - Pale theme
-  progressGreen: '#16A34A', // Darker green for better visibility
-  progressBackground: '#D1D5DB', // Light gray
+  // Special colors - Retro theme
+  progressGreen: '#9ACD32', // Yellow-green
+  progressBackground: '#E6DDD4', // Light beige
   
-  // Gradient colors - Ultra Light Purple Gradients (barely visible)
-  gradientStart: '#7C3AED', // Deep purple
-  gradientMid: '#8B5CF6',   // Medium purple
-  gradientEnd: '#A78BFA',   // Light purple
+  // Gradient colors - Subtle retro gradients
+  gradientStart: '#F4E4BC', // Light cream
+  gradientMid: '#E8D5B7',   // Warm beige
+  gradientEnd: '#D4C5A9',   // Darker beige
   
-  // Card colors - Ultra soft variations
-  cardPink: '#FEE2E2',    // Light red background
-  cardBlue: '#DBEAFE',    // Light blue background
-  cardGreen: '#D1FAE5',   // Light green background
-  cardYellow: '#FEF3C7',  // Light yellow background
-  cardPurple: '#E9D5FF',  // Light purple background
+  // Card colors - Muted pastels
+  cardPink: '#F5E6D3',    // Dusty rose
+  cardBlue: '#E6F2F5',    // Powder blue
+  cardGreen: '#E8F5E8',   // Mint green
+  cardYellow: '#FFF8DC',  // Cornsilk
+  cardPurple: '#F0E6FF',  // Lavender
+  cardOrange: '#FFE4B5',  // Moccasin
   
-  white: '#FFFFFF',
-  black: '#111827', // Very dark gray instead of pure black
-  shadow: 'rgba(0, 0, 0, 0.15)', // Darker shadow for better visibility
+  white: '#FEFCF3',
+  black: '#4A4A4A',
+  shadow: 'rgba(139, 115, 85, 0.15)', // Warm brown shadow
 };
 
 export const spacing = {
@@ -79,21 +80,21 @@ export const shadows = {
   small: {
     shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
   },
   medium: {
     shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.12,
     shadowRadius: 8,
     elevation: 4,
   },
   large: {
     shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.16,
     shadowRadius: 16,
     elevation: 8,
   },

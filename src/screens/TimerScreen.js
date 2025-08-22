@@ -175,6 +175,9 @@ const TimerScreen = () => {
       colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
       style={styles.container}
     >
+      colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
+      style={styles.container}
+    >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <Text style={styles.title}>Focus Timer</Text>
@@ -287,7 +290,6 @@ const TimerScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
   },
   safeArea: {
     flex: 1,
@@ -301,12 +303,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontSize.hero,
     fontWeight: '700',
-    color: colors.textPrimary,
+    color: colors.primary,
     marginBottom: spacing.xs,
+    textShadowColor: 'rgba(255, 255, 255, 0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   subtitle: {
     fontSize: fontSize.md,
-    color: colors.textSecondary,
+    color: colors.textPrimary,
+    opacity: 0.8,
   },
   timerContainer: {
     alignItems: 'center',
@@ -316,12 +322,11 @@ const styles = StyleSheet.create({
     width: 280,
     height: 280,
     borderRadius: 140,
-    backgroundColor: colors.surface,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    borderWidth: 8,
-    borderColor: colors.primary,
+    borderWidth: 6,
     ...shadows.large,
   },
   progressRing: {
@@ -335,10 +340,8 @@ const styles = StyleSheet.create({
     width: 280,
     height: 280,
     borderRadius: 140,
-    borderWidth: 6,
+    borderWidth: 4,
     borderColor: 'transparent',
-    borderTopColor: colors.primary,
-    borderRightColor: colors.primary,
   },
   timerContent: {
     alignItems: 'center',
@@ -350,12 +353,14 @@ const styles = StyleSheet.create({
   },
   timerLabel: {
     fontSize: fontSize.lg,
-    color: colors.textSecondary,
+    color: colors.textPrimary,
+    opacity: 0.7,
     marginBottom: spacing.xs,
   },
   timerSubject: {
     fontSize: fontSize.sm,
-    color: colors.textMuted,
+    color: colors.textPrimary,
+    opacity: 0.6,
   },
   timeSelection: {
     paddingHorizontal: spacing.xl,
@@ -364,9 +369,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: fontSize.lg,
     fontWeight: '600',
-    color: colors.textPrimary,
+    color: colors.primary,
     marginBottom: spacing.md,
     textAlign: 'center',
+    textShadowColor: 'rgba(255, 255, 255, 0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   timeButtons: {
     flexDirection: 'row',
@@ -376,16 +384,17 @@ const styles = StyleSheet.create({
     width: (width - spacing.xl * 2 - spacing.md * 3) / 4,
     paddingVertical: spacing.lg,
     borderRadius: borderRadius.lg,
-    backgroundColor: colors.surface,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     alignItems: 'center',
-    ...shadows.medium,
-    borderWidth: 2,
-    borderColor: colors.surfaceSecondary,
+    ...shadows.small,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 115, 85, 0.2)',
   },
   timeButtonSelected: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
     transform: [{ scale: 1.05 }],
+    ...shadows.medium,
   },
   timeButtonDisabled: {
     opacity: 0.5,
@@ -396,15 +405,17 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   timeButtonTextSelected: {
-    color: colors.white,
+    color: colors.textOnPrimary,
   },
   timeButtonLabel: {
     fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    color: colors.textPrimary,
+    opacity: 0.7,
     marginTop: 2,
   },
   timeButtonLabelSelected: {
-    color: colors.white,
+    color: colors.textOnPrimary,
+    opacity: 0.9,
   },
   subjectSelection: {
     paddingHorizontal: spacing.xl,
@@ -420,11 +431,14 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.md,
     borderRadius: borderRadius.lg,
-    backgroundColor: colors.surface,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
     ...shadows.small,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 115, 85, 0.2)',
   },
   subjectButtonSelected: {
-    backgroundColor: colors.accent,
+    backgroundColor: colors.success,
+    borderColor: colors.success,
   },
   subjectButtonText: {
     fontSize: fontSize.sm,
@@ -432,7 +446,7 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   subjectButtonTextSelected: {
-    color: colors.white,
+    color: colors.textOnPrimary,
   },
   controlButtons: {
     paddingHorizontal: spacing.xl,
@@ -444,19 +458,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.accent,
     borderRadius: borderRadius.xl,
     paddingVertical: spacing.lg,
     paddingHorizontal: spacing.xl,
     marginHorizontal: spacing.lg,
     ...shadows.large,
-    borderWidth: 2,
-    borderColor: colors.primaryDark,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 115, 85, 0.3)',
   },
   startButtonText: {
     fontSize: fontSize.lg,
     fontWeight: '600',
-    color: colors.white,
+    color: colors.textOnPrimary,
     marginLeft: spacing.sm,
   },
   runningControls: {
