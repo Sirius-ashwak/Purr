@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { View, StyleSheet, TouchableOpacity, Dimensions, Platform, Animated } from 'react-native';
 import { GameProvider } from './src/context/GameContext';
@@ -12,7 +11,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors } from './src/constants/theme';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const Stack = createStackNavigator();
 const { width } = Dimensions.get('window');
 
 function TopNavigation({ currentScreen, onNavigate, isVisible, toggleMenu }) {
@@ -32,13 +30,13 @@ function TopNavigation({ currentScreen, onNavigate, isVisible, toggleMenu }) {
         activeOpacity={0.7}
       >
         <LinearGradient
-          colors={['#f3f0ff', '#e9e5ff', '#ddd6fe']}
+          colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
           style={styles.menuButtonGradient}
         >
           <Ionicons 
             name={isVisible ? 'close' : 'menu'} 
             size={24} 
-            color="#000000" 
+            color={colors.black} 
           />
         </LinearGradient>
       </TouchableOpacity>
@@ -47,7 +45,7 @@ function TopNavigation({ currentScreen, onNavigate, isVisible, toggleMenu }) {
       {isVisible && (
         <View style={styles.navigationIcons}>
           <LinearGradient
-            colors={['rgba(243, 240, 255, 0.95)', 'rgba(233, 229, 255, 0.95)', 'rgba(221, 214, 254, 0.95)']}
+            colors={[`${colors.gradientStart}F0`, `${colors.gradientMid}F0`, `${colors.gradientEnd}F0`]}
             style={styles.iconsContainer}
           >
             {menuItems.map((item) => (
@@ -66,7 +64,7 @@ function TopNavigation({ currentScreen, onNavigate, isVisible, toggleMenu }) {
                 <Ionicons 
                   name={currentScreen === item.screen ? item.icon : `${item.icon}-outline`} 
                   size={20} 
-                  color="#000000" 
+                  color={colors.black} 
                 />
               </TouchableOpacity>
             ))}
@@ -112,10 +110,12 @@ function MainNavigator() {
 export default function App() {
   return (
     <GameProvider>
-      <NavigationContainer>
-        <MainNavigator />
-        <StatusBar style="dark" />
-      </NavigationContainer>
+      <View style={{ flex: 1, backgroundColor: '#F7F3E9' }}>
+        <StatusBar style="dark" backgroundColor="#F7F3E9" translucent={false} />
+        <NavigationContainer>
+          <MainNavigator />
+        </NavigationContainer>
+      </View>
     </GameProvider>
   );
 }
@@ -123,29 +123,32 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F7F3E9', // Warm cream background
   },
   topNavigationContainer: {
     position: 'relative',
+    backgroundColor: '#F7F3E9', // Match the warm cream background
     zIndex: 1000,
   },
   menuButton: {
     position: 'absolute',
     top: Platform.OS === 'ios' ? 50 : 20,
-    right: 20, // Changed from left to right
+    right: 20,
     zIndex: 1001,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
   },
   menuButtonGradient: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 55,
+    height: 55,
+    borderRadius: 27,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: colors.primary,
     ...(Platform.OS === 'web' && {
       cursor: 'pointer',
     }),
@@ -153,45 +156,50 @@ const styles = StyleSheet.create({
   navigationIcons: {
     position: 'absolute',
     top: Platform.OS === 'ios' ? 50 : 20,
-    right: 80, // Position to the left of the button
+    right: 85,
     zIndex: 1000,
   },
   iconsContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 30,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 35,
+    borderWidth: 2,
+    borderColor: colors.primary,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
   },
   navIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: `${colors.primary}20`,
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 5,
+    marginHorizontal: 6,
+    borderWidth: 1,
+    borderColor: `${colors.primary}40`,
     ...(Platform.OS === 'web' && {
       cursor: 'pointer',
       transitionDuration: '200ms',
     }),
   },
   navIconActive: {
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    transform: [{ scale: 1.1 }],
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 0 },
+    backgroundColor: colors.accent,
+    borderColor: colors.primary,
+    transform: [{ scale: 1.15 }],
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
-    shadowRadius: 6,
-    elevation: 8,
+    shadowRadius: 8,
+    elevation: 10,
   },
   content: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#F7F3E9', // Warm cream background to match
     paddingTop: Platform.OS === 'ios' ? 120 : 90, // Add space for the top navigation
   },
 });

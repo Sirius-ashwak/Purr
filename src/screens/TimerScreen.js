@@ -175,9 +175,6 @@ const TimerScreen = () => {
       colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
       style={styles.container}
     >
-      colors={[colors.gradientStart, colors.gradientMid, colors.gradientEnd]}
-      style={styles.container}
-    >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <Text style={styles.title}>Focus Timer</Text>
@@ -290,9 +287,11 @@ const TimerScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
   },
   safeArea: {
     flex: 1,
+    backgroundColor: 'transparent', // Make SafeAreaView transparent
   },
   header: {
     alignItems: 'center',

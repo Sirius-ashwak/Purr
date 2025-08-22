@@ -118,32 +118,40 @@ const StatsScreen = () => {
           />
         </View>
 
-        {/* Secondary Stats */}
+        {/* Secondary Stats - Mobile Optimized */}
         <View style={styles.secondaryStats}>
-          <StatCard
-            title="Today's Sessions"
-            value={todaysSessions.length}
-            icon="today"
-            color={colors.success}
-          />
-          <StatCard
-            title="Fish Treats"
-            value={state.user.fishTreats || 0}
-            icon="fish"
-            color="#3498DB"
-          />
-          <StatCard
-            title="Seeds Earned"
-            value={state.user.seeds || 0}
-            icon="leaf"
-            color="#27AE60"
-          />
-          <StatCard
-            title="Current Level"
-            value={state.user.level || 1}
-            icon="trophy"
-            color="#F39C12"
-          />
+          <View style={styles.statsRow}>
+            <View style={styles.smallStatCard}>
+              <View style={[styles.smallStatIcon, { backgroundColor: colors.success }]}>
+                <Ionicons name="today" size={18} color={colors.white} />
+              </View>
+              <Text style={styles.smallStatValue}>{todaysSessions.length}</Text>
+              <Text style={styles.smallStatTitle}>Today's Sessions</Text>
+            </View>
+            <View style={styles.smallStatCard}>
+              <View style={[styles.smallStatIcon, { backgroundColor: "#3498DB" }]}>
+                <Ionicons name="fish" size={18} color={colors.white} />
+              </View>
+              <Text style={styles.smallStatValue}>{state.user.fishTreats || 0}</Text>
+              <Text style={styles.smallStatTitle}>Fish Treats</Text>
+            </View>
+          </View>
+          <View style={styles.statsRow}>
+            <View style={styles.smallStatCard}>
+              <View style={[styles.smallStatIcon, { backgroundColor: "#27AE60" }]}>
+                <Ionicons name="leaf" size={18} color={colors.white} />
+              </View>
+              <Text style={styles.smallStatValue}>{state.user.seeds || 0}</Text>
+              <Text style={styles.smallStatTitle}>Seeds Earned</Text>
+            </View>
+            <View style={styles.smallStatCard}>
+              <View style={[styles.smallStatIcon, { backgroundColor: "#F39C12" }]}>
+                <Ionicons name="trophy" size={18} color={colors.white} />
+              </View>
+              <Text style={styles.smallStatValue}>{state.user.level || 1}</Text>
+              <Text style={styles.smallStatTitle}>Current Level</Text>
+            </View>
+          </View>
         </View>
 
         {/* Top Subject */}
@@ -241,11 +249,12 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
+    backgroundColor: 'transparent', // Make SafeAreaView transparent
   },
   header: {
     paddingHorizontal: spacing.xl,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.xl,
+    paddingTop: spacing.md, // Reduced from lg for mobile
+    paddingBottom: spacing.lg, // Reduced from xl for mobile
   },
   title: {
     fontSize: fontSize.hero,
@@ -262,21 +271,52 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   secondaryStats: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     paddingHorizontal: spacing.xl,
     marginBottom: spacing.xl,
-    gap: spacing.sm,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: spacing.md,
+  },
+  smallStatCard: {
+    backgroundColor: colors.white,
+    borderRadius: borderRadius.lg,
+    padding: spacing.md,
+    alignItems: 'center',
+    width: (width - spacing.xl * 2 - spacing.md) / 2,
+    ...shadows.small,
+  },
+  smallStatIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+  },
+  smallStatValue: {
+    fontSize: fontSize.xl,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
+  },
+  smallStatTitle: {
+    fontSize: fontSize.sm,
+    fontWeight: '500',
+    color: colors.textSecondary,
+    textAlign: 'center',
   },
   statCard: {
     backgroundColor: colors.white,
     borderRadius: borderRadius.lg,
-    padding: spacing.lg,
+    padding: spacing.md, // Reduced from lg for mobile
     marginBottom: spacing.sm,
     ...shadows.small,
   },
   statCardLarge: {
     marginBottom: spacing.md,
+    padding: spacing.lg, // Keep larger padding for main stats
   },
   statCardContent: {
     flexDirection: 'row',
@@ -312,9 +352,9 @@ const styles = StyleSheet.create({
   topSubjectCard: {
     backgroundColor: colors.white,
     borderRadius: borderRadius.lg,
-    padding: spacing.lg,
+    padding: spacing.md, // Reduced padding for mobile
     marginHorizontal: spacing.xl,
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg, // Reduced from xl
     ...shadows.small,
   },
   sectionTitle: {

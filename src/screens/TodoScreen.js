@@ -289,6 +289,7 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
+    backgroundColor: 'transparent', // Make SafeAreaView transparent
   },
   header: {
     flexDirection: 'row',

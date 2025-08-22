@@ -21,13 +21,11 @@ const { width } = Dimensions.get('window');
 const HomeScreen = () => {
   const { state } = useGame();
 
-  const StatsCard = ({ label, value, icon, color, bgColor }) => (
-    <View style={[styles.statsCard, { backgroundColor: bgColor }]}>
-      <View style={[styles.statsIconContainer, { backgroundColor: color }]}>
-        <Ionicons name={icon} size={20} color={colors.white} />
-      </View>
-      <Text style={styles.statsValue}>{value}</Text>
-      <Text style={styles.statsLabel}>{label}</Text>
+  const TreatIcon = ({ icon, value, label }) => (
+    <View style={styles.treatIcon}>
+      <Ionicons name={icon} size={20} color={colors.primary} />
+      <Text style={styles.treatValue}>{value}</Text>
+      <Text style={styles.treatLabel}>{label}</Text>
     </View>
   );
 
@@ -37,94 +35,65 @@ const HomeScreen = () => {
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {/* Header */}
-          <View style={styles.header}>
-            <View>
-              <Text style={styles.greeting}>Happy Fall Studies! 🎃</Text>
-              <Text style={styles.subtitle}>Time to harvest knowledge! 🍂</Text>
-            </View>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+          
+          {/* Treats Row at Top */}
+          <View style={styles.treatsContainer}>
+            <TreatIcon 
+              icon="fish" 
+              value={state?.user?.fishTreats || 100} 
+              label="Fish" 
+            />
+            <TreatIcon 
+              icon="leaf" 
+              value={state?.user?.seeds || 20} 
+              label="Seeds" 
+            />
+            <TreatIcon 
+              icon="trophy" 
+              value={state?.user?.level || 1} 
+              label="Level" 
+            />
+            <TreatIcon 
+              icon="flame" 
+              value={state?.productivity?.streakCount || 0} 
+              label="Streak" 
+            />
           </View>
 
-          {/* Cat Mascot */}
-          <View style={styles.mascotContainer}>
-            <View style={styles.catContainer}>
+          {/* Main Cat Center Section */}
+          <View style={styles.catCenterContainer}>
+            <View style={styles.catMainContainer}>
               <LottieView
                 source={require('../../assets/cat-with-pumpkin.json')}
-                style={styles.catImage}
+                style={styles.catMainImage}
                 autoPlay
                 loop
               />
             </View>
-            <Text style={styles.mascotName}>Pumpkin Purr</Text>
-            <Text style={styles.mascotStatus}>Let's learn together! 📚</Text>
+            <Text style={styles.catMainName}>Pumpkin Purr</Text>
+            <Text style={styles.catMainGreeting}>Happy Fall Studies! 🎃</Text>
+            <Text style={styles.catMainSubtitle}>Time to harvest knowledge! 🍂</Text>
           </View>
 
-          {/* Progress Section */}
-          <View style={styles.progressSection}>
-            <View style={styles.progressCard}>
-              <Text style={styles.progressTitle}>Today's Progress</Text>
-              <View style={styles.progressBar}>
-                <View 
-                  style={[
-                    styles.progressFill, 
-                    { width: `${Math.min(100, ((state?.productivity?.focusSessions?.length || 0) / 8) * 100)}%` }
-                  ]} 
-                />
-              </View>
-              <Text style={styles.progressText}>
-                {state?.productivity?.focusSessions?.length || 0}/8 focus sessions completed
+          {/* Progress Circle */}
+          <View style={styles.progressContainer}>
+            <View style={styles.progressCircle}>
+              <Text style={styles.progressNumber}>
+                {state?.productivity?.focusSessions?.length || 0}
               </Text>
+              <Text style={styles.progressLabel}>Sessions</Text>
+              <Text style={styles.progressSubLabel}>Today</Text>
             </View>
           </View>
 
-          {/* Stats Grid */}
-          <View style={styles.statsSection}>
-            <Text style={styles.sectionTitle}>Your Stats</Text>
-            <View style={styles.statsGrid}>
-              <StatsCard
-                label="Focus Streak"
-                value={state?.productivity?.streakCount || 0}
-                icon="flame"
-                color={colors.danger}
-                bgColor={colors.cardPink}
-              />
-              <StatsCard
-                label="Fish Treats"
-                value={state?.user?.fishTreats || 100}
-                icon="fish"
-                color={colors.primary}
-                bgColor={colors.cardBlue}
-              />
-              <StatsCard
-                label="Seeds"
-                value={state?.user?.seeds || 20}
-                icon="leaf"
-                color={colors.success}
-                bgColor={colors.cardGreen}
-              />
-              <StatsCard
-                label="Level"
-                value={state?.user?.level || 1}
-                icon="trophy"
-                color={colors.warning}
-                bgColor={colors.cardYellow}
-              />
-            </View>
+          {/* Quick Action */}
+          <View style={styles.actionContainer}>
+            <Text style={styles.motivationText}>
+              "Ready to focus and earn some treats? Let's purr-fect your skills! 🐾"
+            </Text>
           </View>
 
-          {/* Motivation Card */}
-          <View style={styles.motivationSection}>
-            <View style={styles.motivationCard}>
-              <View style={styles.motivationHeader}>
-                <Text style={styles.motivationIcon}>✨</Text>
-                <Text style={styles.motivationTitle}>Daily Inspiration</Text>
-              </View>
-              <Text style={styles.motivationText}>
-                "The expert in anything was once a beginner. Start your focus session and take one step closer to mastery!"
-              </Text>
-            </View>
-          </View>
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>
@@ -137,169 +106,127 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
+    backgroundColor: 'transparent', // Make SafeAreaView transparent
   },
-  header: {
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: spacing.lg,
+  },
+  
+  // Treats Row at Top
+  treatsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.md,
+    justifyContent: 'space-around',
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.md,
+    marginTop: spacing.md,
   },
-  greeting: {
-    fontSize: fontSize.xxl,
+  treatIcon: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.md,
+    padding: spacing.sm,
+    minWidth: 60,
+    ...shadows.small,
+  },
+  treatValue: {
+    fontSize: fontSize.md,
     fontWeight: '700',
     color: colors.textPrimary,
+    marginTop: spacing.xs,
   },
-  subtitle: {
-    fontSize: fontSize.md,
+  treatLabel: {
+    fontSize: fontSize.xs,
     color: colors.textSecondary,
     marginTop: 2,
   },
-  profileButton: {
-    backgroundColor: colors.surface,
-    borderRadius: 20,
-    padding: spacing.sm,
-    ...shadows.small,
-  },
-  mascotContainer: {
-    alignItems: 'center',
-    paddingVertical: spacing.xl,
-  },
-  catContainer: {
-    width: 200,
-    height: 200,
-    backgroundColor: colors.surface,
-    borderRadius: 100,
+
+  // Main Cat Center Section
+  catCenterContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    ...shadows.medium,
-    marginBottom: spacing.md,
+    paddingVertical: spacing.xxl,
   },
-  catImage: {
-    width: 180,
-    height: 180,
-  },
-  mascotName: {
-    fontSize: fontSize.lg,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
-  },
-  mascotStatus: {
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-  },
-  progressSection: {
-    paddingHorizontal: spacing.xl,
-    marginBottom: spacing.xl,
-  },
-  progressCard: {
+  catMainContainer: {
+    width: 280,
+    height: 280,
     backgroundColor: colors.surface,
-    borderRadius: borderRadius.lg,
-    padding: spacing.lg,
-    ...shadows.small,
-  },
-  progressTitle: {
-    fontSize: fontSize.lg,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: spacing.md,
-  },
-  progressBar: {
-    height: 12,
-    backgroundColor: colors.progressBackground,
-    borderRadius: 6,
-    overflow: 'hidden',
-    marginBottom: spacing.sm,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: colors.progressGreen,
-    borderRadius: 6,
-  },
-  progressText: {
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  statsSection: {
-    paddingHorizontal: spacing.xl,
-    marginBottom: spacing.xl,
-  },
-  sectionTitle: {
-    fontSize: fontSize.lg,
-    fontWeight: '600',
-    color: colors.textPrimary,
-    marginBottom: spacing.md,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  statsCard: {
-    width: (width - spacing.xl * 2 - spacing.md) / 2,
-    borderRadius: borderRadius.lg,
-    padding: spacing.lg,
-    alignItems: 'center',
-    marginBottom: spacing.md,
-    ...shadows.medium,
-    borderWidth: 1,
-    borderColor: colors.surfaceSecondary,
-  },
-  statsIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    borderRadius: 140,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: spacing.sm,
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
+    ...shadows.large,
+    marginBottom: spacing.lg,
+    borderWidth: 4,
+    borderColor: colors.primary,
   },
-  statsValue: {
-    fontSize: fontSize.xl,
+  catMainImage: {
+    width: 240,
+    height: 240,
+  },
+  catMainName: {
+    fontSize: fontSize.xxl,
     fontWeight: '700',
     color: colors.textPrimary,
-    marginBottom: spacing.xs,
-  },
-  statsLabel: {
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
+    marginBottom: spacing.sm,
     textAlign: 'center',
   },
-  motivationSection: {
-    paddingHorizontal: spacing.xl,
-    marginBottom: spacing.xl,
-  },
-  motivationCard: {
-    backgroundColor: colors.cardPurple,
-    borderRadius: borderRadius.lg,
-    padding: spacing.lg,
-    ...shadows.small,
-  },
-  motivationHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  motivationIcon: {
-    fontSize: 24,
-    marginRight: spacing.sm,
-  },
-  motivationTitle: {
+  catMainGreeting: {
     fontSize: fontSize.lg,
     fontWeight: '600',
     color: colors.textPrimary,
+    marginBottom: spacing.xs,
+    textAlign: 'center',
+  },
+  catMainSubtitle: {
+    fontSize: fontSize.md,
+    color: colors.textSecondary,
+    textAlign: 'center',
+  },
+
+  // Progress Circle
+  progressContainer: {
+    alignItems: 'center',
+    marginVertical: spacing.lg,
+  },
+  progressCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: colors.surface,
+    borderWidth: 6,
+    borderColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...shadows.medium,
+  },
+  progressNumber: {
+    fontSize: fontSize.xxl,
+    fontWeight: '700',
+    color: colors.primary,
+  },
+  progressLabel: {
+    fontSize: fontSize.sm,
+    fontWeight: '600',
+    color: colors.textPrimary,
+  },
+  progressSubLabel: {
+    fontSize: fontSize.xs,
+    color: colors.textSecondary,
+  },
+
+  // Action Container
+  actionContainer: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xl,
+    alignItems: 'center',
   },
   motivationText: {
     fontSize: fontSize.md,
     color: colors.textSecondary,
-    lineHeight: 22,
+    textAlign: 'center',
+    fontStyle: 'italic',
+    lineHeight: 20,
   },
 });
 
