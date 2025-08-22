@@ -320,7 +320,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    borderWidth: 6,
+    borderWidth: 8,
+    borderColor: colors.primary,
     ...shadows.large,
   },
   progressRing: {
@@ -377,10 +378,14 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.lg,
     backgroundColor: colors.surface,
     alignItems: 'center',
-    ...shadows.small,
+    ...shadows.medium,
+    borderWidth: 2,
+    borderColor: colors.surfaceSecondary,
   },
   timeButtonSelected: {
     backgroundColor: colors.primary,
+    borderColor: colors.primary,
+    transform: [{ scale: 1.05 }],
   },
   timeButtonDisabled: {
     opacity: 0.5,
@@ -444,7 +449,9 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.lg,
     paddingHorizontal: spacing.xl,
     marginHorizontal: spacing.lg,
-    ...shadows.medium,
+    ...shadows.large,
+    borderWidth: 2,
+    borderColor: colors.primaryDark,
   },
   startButtonText: {
     fontSize: fontSize.lg,

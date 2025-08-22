@@ -1,47 +1,47 @@
 // Ultra Light Purple Gradient Theme - Barely Noticeable Elegance
 export const colors = {
   // Primary colors - Ultra Pale Purple Theme
-  primary: '#faf5ff', // Ultra light purple
-  primaryLight: '#fefbff',
-  primaryDark: '#f3f0ff',
+  primary: '#5B21B6', // Deep purple
+  primaryLight: '#7C3AED',
+  primaryDark: '#4C1D95',
   
   // Background colors - Almost white with hint of purple
-  background: '#fefefe', // Nearly white with purple tint
-  surface: '#FFFFFF',
-  surfaceSecondary: '#fefcff',
+  background: '#F3F4F6', // Light gray background
+  surface: '#FFFFFF', // Pure white
+  surfaceSecondary: '#E5E7EB',
   
   // Accent colors - Very subtle purples
-  accent: '#f9f5ff', // Barely purple
-  accentLight: '#fcfaff',
-  success: '#f3f0ff', // Ultra pale purple success
-  warning: '#f5f3ff', // Ultra pale purple warning
-  danger: '#faf5ff', // Ultra pale purple danger
+  accent: '#DC2626', // Bright red
+  accentLight: '#EF4444',
+  success: '#059669', // Dark green
+  warning: '#D97706', // Dark orange
+  danger: '#DC2626', // Bright red
   
   // Text colors - High contrast for excellent readability
-  textPrimary: '#000000', // Pure black for maximum contrast
-  textSecondary: '#1f2937', // Very dark gray
-  textMuted: '#374151', // Dark gray but still readable
-  textOnPrimary: '#000000',
+  textPrimary: '#111827', // Very dark gray
+  textSecondary: '#374151', // Dark gray
+  textMuted: '#6B7280', // Medium gray
+  textOnPrimary: '#FFFFFF', // White text on colored backgrounds
   
   // Special colors - Pale theme
-  progressGreen: '#f3f0ff', // Ultra pale purple progress
-  progressBackground: '#fafafa',
+  progressGreen: '#16A34A', // Darker green for better visibility
+  progressBackground: '#D1D5DB', // Light gray
   
   // Gradient colors - Ultra Light Purple Gradients (barely visible)
-  gradientStart: '#fefefe', // Almost white
-  gradientMid: '#fefcff',   // Hint of purple
-  gradientEnd: '#faf5ff',   // Barely purple
+  gradientStart: '#7C3AED', // Deep purple
+  gradientMid: '#8B5CF6',   // Medium purple
+  gradientEnd: '#A78BFA',   // Light purple
   
   // Card colors - Ultra soft variations
-  cardPink: '#fffbff',
-  cardBlue: '#fefcff',
-  cardGreen: '#fefeff',
-  cardYellow: '#fffffe',
-  cardPurple: '#fefcff',
+  cardPink: '#FEE2E2',    // Light red background
+  cardBlue: '#DBEAFE',    // Light blue background
+  cardGreen: '#D1FAE5',   // Light green background
+  cardYellow: '#FEF3C7',  // Light yellow background
+  cardPurple: '#E9D5FF',  // Light purple background
   
   white: '#FFFFFF',
-  black: '#000000', // Pure black for maximum contrast
-  shadow: 'rgba(0, 0, 0, 0.1)',
+  black: '#111827', // Very dark gray instead of pure black
+  shadow: 'rgba(0, 0, 0, 0.15)', // Darker shadow for better visibility
 };
 
 export const spacing = {

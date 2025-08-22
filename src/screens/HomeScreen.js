@@ -244,7 +244,9 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     alignItems: 'center',
     marginBottom: spacing.md,
-    ...shadows.small,
+    ...shadows.medium,
+    borderWidth: 1,
+    borderColor: colors.surfaceSecondary,
   },
   statsIconContainer: {
     width: 40,
@@ -253,6 +255,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.sm,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   statsValue: {
     fontSize: fontSize.xl,
