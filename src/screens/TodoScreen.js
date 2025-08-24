@@ -9,6 +9,7 @@ import {
   TextInput,
   Alert,
   Modal,
+  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -45,18 +46,24 @@ const TodoScreen = () => {
   };
 
   const handleCompleteTask = (taskId) => {
-    Alert.alert(
-      'Complete Task',
-      'Mark this task as completed?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Complete', 
-          onPress: () => completeTask(taskId),
-          style: 'default'
-        },
-      ]
-    );
+    if (Platform.OS === 'web') {
+      // On web, we'll directly complete the task without confirmation for better UX
+      completeTask(taskId);
+    } else {
+      // On mobile, keep the Alert dialog for confirmation
+      Alert.alert(
+        'Complete Task',
+        'Mark this task as completed?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { 
+            text: 'Complete', 
+            onPress: () => completeTask(taskId),
+            style: 'default'
+          },
+        ]
+      );
+    }
   };
 
   const getPriorityColor = (priority) => {
@@ -80,7 +87,12 @@ const TodoScreen = () => {
     <View style={[styles.taskItem, task.completed && styles.taskItemCompleted]}>
       <TouchableOpacity
         style={styles.taskContent}
-        onPress={() => !task.completed && handleCompleteTask(task.id)}
+        onPress={() => {
+          if (!task.completed) {
+            handleCompleteTask(task.id);
+          }
+        }}
+        activeOpacity={task.completed ? 1 : 0.7}
       >
         <View style={styles.taskLeft}>
           <View style={[styles.checkbox, task.completed && styles.checkboxCompleted]}>
@@ -378,6 +390,10 @@ const styles = StyleSheet.create({
   },
   taskContent: {
     padding: spacing.lg,
+    ...(Platform.OS === 'web' && {
+      cursor: 'pointer',
+      transitionDuration: '200ms',
+    }),
   },
   taskLeft: {
     flexDirection: 'row',
